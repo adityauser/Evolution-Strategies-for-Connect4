@@ -1,2 +1,4 @@
 # Evolution-Strategies-RL
-Code related to work done at CWI remote internship.
+### TODO:
+- [ ] Solve Connect Four game  in <a href="https://github.com/deepmind/open_spiel">Open Spiel</a> using ES algorithms.
+
