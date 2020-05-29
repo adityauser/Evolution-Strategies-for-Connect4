@@ -27,6 +27,7 @@ parser.add_argument("--layers", help="number of ann hidden layers",default=6)
 parser.add_argument("--activation",help="ann activation function",default="relu")
 parser.add_argument("--max_evals",help="total number of evaluations",default=100000)
 parser.add_argument("--domain",help="Experimental domain", default="connect_four",choices=['connect_four_CNN','breadcrumb_maze', 'connect_four'])
+#Ignore this argument
 parser.add_argument("--frameskip",help="frameskip amount (i.e. query agent every X frames for action)", default="3")
 
 #Parse arguments

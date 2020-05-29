@@ -309,10 +309,7 @@ class individual:
             self.net_reward+=reward
             self.solved = reward==1
             self.matchs_played+=1
-        else:
-            self.matchs_played+=1
-            self.net_reward = -1e8
-        _c4_fitness(self)
+            _c4_fitness(self)
 
         return terminal_state, broken
 
@@ -751,3 +748,4 @@ if __name__ == '__main__':
     robot = individual()
     robot.load(solution_file)
     robot.render(screen)
+
