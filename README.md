@@ -8,4 +8,7 @@ For using convolutional layer <br>
 `python experiment_runner_modified.py --mutation SM-G-SO --mutation_mag 0.001 --display --domain connect_four_CNN  --max_evals 500 --pop_size 150` <br>
 To find about all the arguments use: <br>
 `python experiment_runner_modified.py --help` <br>
+**Note:** <br>
+Don't set population size to a number which is divisible by 100.
+Avoid testing for large mutation_mag, otherwise you will get 0 probablities for legal states very frequently.
 
