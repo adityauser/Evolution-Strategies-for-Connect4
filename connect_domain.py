@@ -95,7 +95,7 @@ class netmodel(torch.nn.Module):
 
         self.train()
 
-    def forward(self, inputs,intermediate=None,debug=False):
+    def forward(self, inputs, mask, intermediate=None, debug=False):
 
         x = inputs
         #fully connection input -> hidden
@@ -116,6 +116,9 @@ class netmodel(torch.nn.Module):
         
         #output layer
         x = self.fc_out(x)
+        #masking
+        x[~mask] = float('-inf')
+        #softmax
         x = self.softmax(x)
 
         if intermediate!=None:
@@ -311,6 +314,10 @@ class individual:
             self.matchs_played+=1
             _c4_fitness(self)
 
+        else:
+            #self.matchs_played+=1
+            pass
+
         return terminal_state, broken
 
     def prepare(self):
@@ -343,8 +350,6 @@ class individual:
 def do_rollout(args, model, env, against, render=False, screen=None, trace=False):
     state_buffer = collections.deque([], 400)
 
-    action_repeat = 3
-
     #TODO: Replace the random selection of first turn with some deterministic method.
     turn = random.sample([1, 0], 1)[0]
 
@@ -366,11 +371,19 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
 
         player = state.current_player()
 
-        if True:  #(random.random()<0.05):
-            state_buffer.appendleft(obs.numpy())
+        legal_act = state.legal_actions(player)
 
-        if len(state.legal_actions(player))<1:
-            print("No move left",state.legal_actions(player))
+        #mask
+        mask = np.zeros((1, 7), dtype=np.bool)
+        for legal in legal_act:
+            mask[0, legal] = 1
+
+        if True:  #(random.random()<0.05):
+            state_buffer.appendleft([obs.numpy(), mask])
+
+        
+        if len(legal_act)<1:
+            print("No move left", legal_act)
 
         obs = obs.view(1, len(state.observation_tensor()))
         
@@ -379,19 +392,11 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
             if against ==None:
                 action = random.choice(state.legal_actions(player))
             else:
-                logit = opponent_model(Variable(obs, volatile=True))
+                logit = opponent_model(Variable(obs, volatile=True), torch.from_numpy(mask))
                 actions = logit.data.numpy()[0]
 
                 if np.isnan(actions).any():
                     print("check_nan1",actions)
-
-                for a in range(len(actions)):
-                    actions[a] = int(a in state.legal_actions(player))*actions[a]
-
-                if np.isnan(actions).any():
-                    print("check_nan2",actions)
-
-                actions = actions/sum(actions)
 
                 if np.isnan(actions).any():
                     print("check_nan3",actions)
@@ -402,19 +407,11 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
 
                 
         elif (player + turn)%2 == 1:
-            logit = model(Variable(obs, volatile=True))
+            logit = model(Variable(obs, volatile=True), torch.from_numpy(mask))
             actions = logit.data.numpy()[0]
 
             if np.isnan(actions).any():
                 print("check_nan1",actions)
-
-            for a in range(len(actions)):
-                actions[a] = int(a in state.legal_actions(player))*actions[a]
-
-            if np.isnan(actions).any():
-                print("check_nan2",actions)
-
-            actions = actions/sum(actions)
 
             if np.isnan(actions).any():
                 print("check_nan3",step,actions)
@@ -482,12 +479,14 @@ def mutate_sm_r(params,
     delta = np.random.randn(*(params.shape)).astype(np.float32)
     delta = delta / np.sqrt((delta**2).sum())
 
-    sz = min(100,len(state_archive))
-    np_obs = np.array(random.sample(state_archive, sz), dtype=np.float32)
+    sz = min(100, len(state_archive))
+    np_obs = random.sample(state_archive, sz)
     verification_states = Variable(
-        torch.from_numpy(np_obs), requires_grad=False)
+        torch.from_numpy(np.array([i[0] for i in np_obs])), requires_grad=False)
+    verification_mask = Variable(
+        torch.from_numpy(np.array([i[1] for i in np_obs])), requires_grad=False)
 
-    output = model(verification_states)
+    output = model(verification_states, verification_mask.squeeze(1))
     old_policy = output.data.numpy()
 
     #do line search
@@ -519,14 +518,19 @@ def check_policy_change(p1,p2,states):
     #TODO: check impact of greater accuracy
     sz = min(100,len(states))
 
-    verification_states = np.array(random.sample(states, sz), dtype=np.float32)
-    verification_states = Variable(torch.from_numpy(verification_states), requires_grad=False)
-    old_policy = model(verification_states).data.numpy()
+
+    np_obs = random.sample(state_archive, sz)
+    verification_states = Variable(
+        torch.from_numpy(np.array([i[0] for i in np_obs])), requires_grad=False)
+    verification_mask = Variable(
+        torch.from_numpy(np.array([i[1] for i in np_obs])), requires_grad=False)
+
+    old_policy = model(verification_states, verification_mask.squeeze(1)).data.numpy()
     old_policy = Variable(torch.from_numpy(old_policy), requires_grad=False)
 
     model.inject_parameters(p2.copy())
     model.zero_grad()
-    new_policy = model(verification_states)
+    new_policy = model(verification_states, verification_mask.squeeze(1))
     divergence_loss_fn = torch.nn.MSELoss(size_average=True)
     divergence_loss = divergence_loss_fn(new_policy,old_policy)
 
@@ -554,13 +558,19 @@ def mutate_sm_g(mutation,
     #sub-sample experiences from parent
  #   print(states[-1], states)
     sz = min(100,len(states))
-    verification_states = np.array(random.sample(states, sz), dtype=np.float32)
-    verification_states = Variable(torch.from_numpy(verification_states), requires_grad=False)
+    
+
+    np_obs = random.sample(states, sz)
+   # print(len(np_obs[0]))
+    verification_states = Variable(
+        torch.from_numpy(np.array([i[0] for i in np_obs])), requires_grad=False)
+    verification_mask = Variable(
+        torch.from_numpy(np.array([i[1] for i in np_obs])), requires_grad=False)
+   # print("verification_mask", verification_mask.size(), verification_mask.squeeze(1))
 
     #run experiences through model
     #NOTE: for efficiency, could cache these during actual evalution instead of recalculating
-    old_policy = model(verification_states)
-
+    old_policy = model(verification_states, verification_mask.squeeze(1))
     num_outputs = old_policy.size()[1]
 
     abs_gradient=False 
@@ -615,7 +625,7 @@ def mutate_sm_g(mutation,
 
         for i in range(num_outputs):
             for j in range(sz):
-                old_policy_j = model(verification_states[j:j+1])
+                old_policy_j = model(verification_states[j:j+1], verification_mask.squeeze(1)[j:j+1])
                 model.zero_grad()   
                 grad_output.zero_()
 
@@ -669,7 +679,7 @@ def mutate_sm_g(mutation,
         new_params = params + final_delta
         model.inject_parameters(new_params)
 
-        output = model(verification_states).data.numpy()
+        output = model(verification_states, verification_mask.squeeze(1)).data.numpy()
         change = np.sqrt(((output - old_policy)**2).sum(1)).mean()
 
         if raw:
