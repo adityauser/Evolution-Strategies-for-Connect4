@@ -46,6 +46,8 @@ class netmodel(torch.nn.Module):
         #should hidden units have biases?
         num_outputs = action_space
 
+        self.softmax = nn.Softmax(dim=1)
+
         self.main = nn.Sequential(
             # in_channels, out_channels, kernel_size, stride, padding
             nn.Conv2d(in_channels, num_features, 4,     #[7,6]
@@ -75,13 +77,17 @@ class netmodel(torch.nn.Module):
 
             nn.Linear(num_outputs * 2, num_outputs),
 
-            nn.Softmax(1)
         )
 
-    def forward(self, inputs,intermediate=None,debug=False):
-      #  print(help(inputs))
-        main = self.main(inputs.float())
-        return main
+    def forward(self, inputs, mask, intermediate=None, debug=False):
+        #output layer
+        x = self.main(inputs.float())
+        #masking
+        x[~mask] = float('-inf')
+        #softmax
+        x = self.softmax(x)
+        
+        return x
 
     #function to return current pytorch gradient in same order as genome's flat vector theta
     def extract_grad(self):
@@ -269,10 +275,7 @@ class individual:
             self.net_reward+=reward
             self.solved = reward==1
             self.matchs_played+=1
-        else:
-            self.matchs_played+=1
-            self.net_reward = -1e8
-        _c4_fitness(self)
+            _c4_fitness(self)
 
         return terminal_state, broken
 
@@ -308,8 +311,6 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
 
     transform = transforms.Compose([transforms.ToTensor()])
 
-    action_repeat = 3
-
     #TODO: Replace the random selection of first turn with some deterministic method.
     turn = random.sample([1, 0], 1)[0]
 
@@ -330,8 +331,15 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
 
         player = state.current_player()
 
-        if len(state.legal_actions(player))<1:
-            print("No move left",state.legal_actions(player))
+        legal_act = state.legal_actions(player)
+
+        #mask
+        mask = np.zeros((1, 7), dtype=np.bool)
+        for legal in legal_act:
+            mask[0, legal] = 1
+
+        if len(legal_act)<1:
+            print("No move left", legal_act)
 
         obs = transform(obs).unsqueeze(0)
         
@@ -340,19 +348,11 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
             if against ==None:
                 action = random.choice(state.legal_actions(player))
             else:
-                logit = opponent_model(Variable(obs, volatile=True))
+                logit = opponent_model(Variable(obs, volatile=True), torch.from_numpy(mask))
                 actions = logit.data.numpy()[0]
 
                 if np.isnan(actions).any():
                     print("check_nan1",actions)
-
-                for a in range(len(actions)):
-                    actions[a] = int(a in state.legal_actions(player))*actions[a]
-
-                if np.isnan(actions).any():
-                    print("check_nan2",actions)
-
-                actions = actions/sum(actions)
 
                 if np.isnan(actions).any():
                     print("check_nan3",actions)
@@ -363,19 +363,11 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
 
                 
         elif (player + turn)%2 == 1:
-            logit = model(Variable(obs, volatile=True))
+            logit = model(Variable(obs, volatile=True), torch.from_numpy(mask))
             actions = logit.data.numpy()[0]
 
             if np.isnan(actions).any():
                 print("check_nan1",actions)
-
-            for a in range(len(actions)):
-                actions[a] = int(a in state.legal_actions(player))*actions[a]
-
-            if np.isnan(actions).any():
-                print("check_nan2",actions)
-
-            actions = actions/sum(actions)
 
             if np.isnan(actions).any():
                 print("check_nan3",step,actions)
@@ -387,13 +379,6 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
         else:
             raise("Illegal player")
 
-            
-
-        if action not in state.legal_actions(player):
-            print("ab kya kru")
-            print(state.legal_actions(player), actions)
-        #print(action)
-            
 
         state.apply_action(action)
         
@@ -405,7 +390,7 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
         this_model_return += reward
 
         if True:  #(random.random()<0.05):
-            state_buffer.appendleft(obs.squeeze(0).numpy())  
+            state_buffer.appendleft([obs.squeeze(0).numpy(), mask])  
 
         if done:
             break
@@ -449,12 +434,14 @@ def mutate_sm_r(params,
     delta = np.random.randn(*(params.shape)).astype(np.float32)
     delta = delta / np.sqrt((delta**2).sum())
 
-    sz = min(100,len(state_archive))
-    np_obs = np.array(random.sample(state_archive, sz), dtype=np.float32)
+    sz = min(100, len(state_archive))
+    np_obs = random.sample(state_archive, sz)
     verification_states = Variable(
-        torch.from_numpy(np_obs), requires_grad=False)
+        torch.from_numpy(np.array([i[0] for i in np_obs])), requires_grad=False)
+    verification_mask = Variable(
+        torch.from_numpy(np.array([i[1] for i in np_obs])), requires_grad=False)
 
-    output = model(verification_states)
+    output = model(verification_states, verification_mask.squeeze(1))
     old_policy = output.data.numpy()
 
     #do line search
@@ -465,7 +452,7 @@ def mutate_sm_r(params,
         new_params = params + delta * x
         model.inject_parameters(new_params)
 
-        output = model(verification_states).data.numpy()
+        output = model(verification_states, verification_mask.squeeze(1)).data.numpy()
 
         change = ((output - old_policy)**2).mean()
         if raw:
@@ -486,14 +473,18 @@ def check_policy_change(p1,p2,states):
     #TODO: check impact of greater accuracy
     sz = min(100,len(states))
 
-    verification_states = np.array(random.sample(states, sz), dtype=np.float32)
-    verification_states = Variable(torch.from_numpy(verification_states), requires_grad=False)
-    old_policy = model(verification_states).data.numpy()
+    np_obs = random.sample(state_archive, sz)
+    verification_states = Variable(
+        torch.from_numpy(np.array([i[0] for i in np_obs])), requires_grad=False)
+    verification_mask = Variable(
+        torch.from_numpy(np.array([i[1] for i in np_obs])), requires_grad=False)
+
+    old_policy = model(verification_states, verification_mask.squeeze(1)).data.numpy()
     old_policy = Variable(torch.from_numpy(old_policy), requires_grad=False)
 
     model.inject_parameters(p2.copy())
     model.zero_grad()
-    new_policy = model(verification_states)
+    new_policy = model(verification_states, verification_mask.squeeze(1))
     divergence_loss_fn = torch.nn.MSELoss(size_average=True)
     divergence_loss = divergence_loss_fn(new_policy,old_policy)
 
@@ -521,12 +512,17 @@ def mutate_sm_g(mutation,
     #sub-sample experiences from parent
  #   print(states[-1], states)
     sz = min(100,len(states))
-    verification_states = np.array(random.sample(states, sz), dtype=np.float32)
-    verification_states = Variable(torch.from_numpy(verification_states), requires_grad=False)
+    np_obs = random.sample(states, sz)
+   # print(len(np_obs[0]))
+    verification_states = Variable(
+        torch.from_numpy(np.array([i[0] for i in np_obs])), requires_grad=False)
+    verification_mask = Variable(
+        torch.from_numpy(np.array([i[1] for i in np_obs])), requires_grad=False)
+   # print("verification_mask", verification_mask.size(), verification_mask.squeeze(1))
 
     #run experiences through model
     #NOTE: for efficiency, could cache these during actual evalution instead of recalculating
-    old_policy = model(verification_states)
+    old_policy = model(verification_states, verification_mask.squeeze(1))
 
     num_outputs = old_policy.size()[1]
 
@@ -582,7 +578,7 @@ def mutate_sm_g(mutation,
 
         for i in range(num_outputs):
             for j in range(sz):
-                old_policy_j = model(verification_states[j:j+1])
+                old_policy_j = model(verification_states[j:j+1], verification_mask.squeeze(1)[j:j+1])
                 model.zero_grad()   
                 grad_output.zero_()
 
@@ -636,7 +632,7 @@ def mutate_sm_g(mutation,
         new_params = params + final_delta
         model.inject_parameters(new_params)
 
-        output = model(verification_states).data.numpy()
+        output = model(verification_states, verification_mask.squeeze(1)).data.numpy()
         change = np.sqrt(((output - old_policy)**2).sum(1)).mean()
 
         if raw:
@@ -715,3 +711,4 @@ if __name__ == '__main__':
     robot = individual()
     robot.load(solution_file)
     robot.render(screen)
+
