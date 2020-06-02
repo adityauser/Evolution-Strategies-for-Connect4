@@ -21,7 +21,7 @@ import uuid
 import pyspiel
 import re
 
-do_cuda = False 
+do_cuda = True 
 if not do_cuda:
     torch.backends.cudnn.enabled = False
 
@@ -117,9 +117,9 @@ class netmodel(torch.nn.Module):
         numpy_params = []
 
         for name,param in self.named_parameters():
-            sz = param.data.numpy().flatten().shape[0]
+            sz = param.cpu().data.numpy().flatten().shape[0]
             raw = pvec[count:count + sz]
-            reshaped = raw.reshape(param.data.numpy().shape)
+            reshaped = raw.reshape(param.cpu().data.numpy().shape)
             numpy_params.append((name,reshaped))
             count += sz
 
@@ -132,9 +132,9 @@ class netmodel(torch.nn.Module):
         count = 0
 
         for param in self.parameters():
-            sz = param.data.numpy().flatten().shape[0]
+            sz = param.cpu().data.numpy().flatten().shape[0]
             raw = pvec[count:count + sz]
-            reshaped = raw.reshape(param.data.numpy().shape)
+            reshaped = raw.reshape(param.cpu().data.numpy().shape)
             param.data = torch.from_numpy(reshaped)
             count += sz
 
@@ -145,7 +145,7 @@ class netmodel(torch.nn.Module):
         count = 0
         for param in self.parameters():
             #print param.data.numpy().shape
-            count += param.data.numpy().flatten().shape[0]
+            count += param.cpu().data.numpy().flatten().shape[0]
         return count
 
 

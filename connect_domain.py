@@ -22,7 +22,7 @@ import pyspiel
 import re
 import copy
 
-do_cuda = False 
+do_cuda = True 
 if not do_cuda:
     torch.backends.cudnn.enabled = False
 
@@ -155,9 +155,9 @@ class netmodel(torch.nn.Module):
         numpy_params = []
 
         for name,param in self.named_parameters():
-            sz = param.data.numpy().flatten().shape[0]
+            sz = param.cpu().data.numpy().flatten().shape[0]
             raw = pvec[count:count + sz]
-            reshaped = raw.reshape(param.data.numpy().shape)
+            reshaped = raw.reshape(param.cpu().data.numpy().shape)
             numpy_params.append((name,reshaped))
             count += sz
 
@@ -170,9 +170,9 @@ class netmodel(torch.nn.Module):
         count = 0
 
         for param in self.parameters():
-            sz = param.data.numpy().flatten().shape[0]
+            sz = param.cpu().data.numpy().flatten().shape[0]
             raw = pvec[count:count + sz]
-            reshaped = raw.reshape(param.data.numpy().shape)
+            reshaped = raw.reshape(param.cpu().data.numpy().shape)
             param.data = torch.from_numpy(reshaped)
             count += sz
 
@@ -183,7 +183,7 @@ class netmodel(torch.nn.Module):
         count = 0
         for param in self.parameters():
             #print param.data.numpy().shape
-            count += param.data.numpy().flatten().shape[0]
+            count += param.cpu().data.numpy().flatten().shape[0]
         return count
 
 
@@ -209,6 +209,7 @@ class individual:
         self.matchs_played = 0
         self.net_reward = 0
         self.identity = identity
+        self.states = collections.deque([], 100)
 
         if self.percolate:
             self.__class__.instances.append(weakref.proxy(self))
@@ -292,7 +293,7 @@ class individual:
     def map(self, push_all=True, trace=False, against = None, test = False):
         global state_archive
         individual.global_model.inject_parameters(self.genome)
-        reward, state_buffer, terminal_state, broken = individual.rollout({}, individual.global_model, individual.env, against)
+        reward, state_buffer, terminal_state, broken = individual.rollout({}, individual.global_model, individual.env, against, self.states)
 
         if test:
             return reward, terminal_state, broken
@@ -301,7 +302,7 @@ class individual:
             state_archive = state_buffer
             self.states = state_buffer
         else:
-            print("not using all states")
+            #print("not using all states")
             state_archive.appendleft(random.choice(state_buffer))
             self.states = None
 
@@ -347,8 +348,9 @@ class individual:
 
 #Method to conduct maze rollout
 @staticmethod
-def do_rollout(args, model, env, against, render=False, screen=None, trace=False):
-    state_buffer = collections.deque([], 400)
+def do_rollout(args, model, env, against, state_buffer=None, render=False, screen=None, trace=False):
+    if state_buffer==None:
+        state_buffer = collections.deque([], 400)
 
     #TODO: Replace the random selection of first turn with some deterministic method.
     turn = random.sample([1, 0], 1)[0]
@@ -389,7 +391,7 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
         
 
         if (player + turn)%2 == 0:
-            if against ==None:
+            if against==None:
                 action = random.choice(state.legal_actions(player))
             else:
                 logit = opponent_model(Variable(obs, volatile=True), torch.from_numpy(mask))
@@ -497,7 +499,7 @@ def mutate_sm_r(params,
         new_params = params + delta * x
         model.inject_parameters(new_params)
 
-        output = model(verification_states).data.numpy()
+        output = model(verification_states, verification_mask.squeeze(1)).data.numpy()
 
         change = ((output - old_policy)**2).mean()
         if raw:
