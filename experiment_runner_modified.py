@@ -27,6 +27,7 @@ parser.add_argument("--gen_length", help="number of evaluations in a generation"
 parser.add_argument("--population_play", help="play matches against population", action="store_true")
 parser.add_argument("--fast", help="don't run unnecessary part od code", action="store_true")
 parser.add_argument("--init", help="init rule", default="xavier")
+parser.add_argument("--message", help="description of the experiment", default="")
 parser.add_argument("--celltype", help="recurrent cell type",default="lstm",choices=['lstm','gru','rnn'])
 parser.add_argument("--layers", help="number of ann hidden layers",default=6)
 parser.add_argument("--activation",help="ann activation function",default="relu")
@@ -180,7 +181,7 @@ if (__name__ == '__main__'):
 
         if evals % 50 == 0:
             gc.collect()
-
+        '''
         #Aditya: You can ignore this if component
         if evals % 500 == 0:
             #logging progress to text file
@@ -194,7 +195,7 @@ if (__name__ == '__main__'):
             open(f,"a+").write(outline+"\n")
             f2 = "%s_best.npy" % args.save
             best_ind.save(f2)
-
+		'''
         #tournament selection and evalute in domain
         while broken:
             trial_reward = 0
@@ -292,9 +293,9 @@ if (__name__ == '__main__'):
             for parent in population:
                 broken = True
                 while broken:
-                    #parent.matchs_played = 0
-                    #parent.net_reward = 0
-                    #parent.fitness = 0
+                    parent.matchs_played = 0
+                    parent.net_reward = 0
+                    parent.fitness = 0
                     for against in opponents:
                         terminal_state, broken = parent.map(push_all=args.state_archive, against=against)
                         if broken:
@@ -379,9 +380,17 @@ if (__name__ == '__main__'):
     plt.fill_between(range(int(args.pop_size)+gen_length, evals, gen_length), np.amin(performance, axis=1), np.amax(performance, axis=1), color='pink', alpha='1')
     if args.save_reward:
         if args.population_play:
-            plt.savefig('PopulationPlay/'+args.name+'evaluation_'+str(args.mutation)+'_population_play'+'.svg', format='svg')
+        	if not os.path.exists('PopulationPlay/'+args.name):
+        		os.makedirs('PopulationPlay/'+args.name)
+        	plt.savefig('PopulationPlay/'+args.name+'/evaluation_'+str(args.mutation)+'.svg', format='svg')
+        	file = open('PopulationPlay/'+args.name+'/message.txt','w') 
         else:
-            plt.savefig('test/'+args.name+'evaluation_'+str(args.mutation)+'.svg', format='svg')
+        	if not os.path.exists('test/'+args.name):
+        		os.makedirs('test/'+args.name)
+        	plt.savefig('test/'+args.name+'/evaluation_'+str(args.mutation)+'.svg', format='svg')
+        	file = open('test/'+args.name+'/message.txt','w') 
+        file.write(args.message) 
+        file.close() 
     plt.show()
 
     [print(x.net_reward, x.matchs_played) for x in population]
