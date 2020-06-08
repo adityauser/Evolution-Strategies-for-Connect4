@@ -22,7 +22,7 @@ import pyspiel
 import re
 import copy
 
-do_cuda = True 
+do_cuda = False 
 if not do_cuda:
     torch.backends.cudnn.enabled = False
 
@@ -290,13 +290,13 @@ class individual:
         pass
 
     #evaluate genome in environment with a roll-out
-    def map(self, push_all=True, trace=False, against = None, test = False):
+    def map(self, push_all=True, trace=False, against = None, test = False, print_game=False):
         global state_archive
         individual.global_model.inject_parameters(self.genome)
-        reward, state_buffer, terminal_state, broken = individual.rollout({}, individual.global_model, individual.env, against, self.states)
+        reward, state_buffer, terminal_state, broken, the_game = individual.rollout({}, individual.global_model, individual.env, against, self.states, print_game)
 
         if test:
-            return reward, terminal_state, broken
+            return reward, terminal_state, broken, the_game
 
         if push_all:
             state_archive = state_buffer
@@ -348,9 +348,11 @@ class individual:
 
 #Method to conduct maze rollout
 @staticmethod
-def do_rollout(args, model, env, against, state_buffer=None, render=False, screen=None, trace=False):
+def do_rollout(args, model, env, against, state_buffer=None, print_game=False, render=False, screen=None, trace=False):
     if state_buffer==None:
         state_buffer = collections.deque([], 400)
+
+    the_game = []
 
     #TODO: Replace the random selection of first turn with some deterministic method.
     turn = random.sample([1, 0], 1)[0]
@@ -421,13 +423,23 @@ def do_rollout(args, model, env, against, state_buffer=None, render=False, scree
                 broken=True
                 break
 
+            #action = np.argmax(actions)
             action = np.random.choice(len(actions), 1, p=actions)[0]
         else:
             raise("Illegal player")
 
-
         state.apply_action(action)
         
+        #print the game
+        if print_game:
+            if (player + turn)%2 == 1:
+                the_game.append(["It's agents' turn. Player: ", player])
+                the_game.append(["Moves probablity: ", actions])
+            else:
+                the_game.append(["It's opponents' turn. Player: ", player])
+            the_game.append(["Player move", action])
+            the_game.append([copy.deepcopy(state)])
+
         reward = state.returns()[(1 + turn)%2]
 
         done = state.is_terminal()
@@ -445,7 +457,7 @@ def do_rollout(args, model, env, against, state_buffer=None, render=False, scree
 
    # print(step)
 
-    return this_model_return, state_buffer, state, broken
+    return this_model_return, state_buffer, state, broken, the_game
 
 
 def mutate_plain(params, mag=0.05,**kwargs):
@@ -546,6 +558,7 @@ def mutate_sm_g(mutation,
                        verbose=False,
                        states=None,
                        mag=0.1,
+                       fitness=0,
                         **kwargs):
 
     global state_archive
@@ -651,6 +664,10 @@ def mutate_sm_g(mutation,
 
     #rescale perturbation on a per-weight basis
     delta /= scaling
+
+    #delta should be less if fitness is high
+  #  delta *= np.sqrt(1.05-fitness)
+   # print("Sum of delta changed from {} to {}".format(sum(delta/np.sqrt(1.05-fitness)), sum(delta)))
 
     #generate new perturbation
     new_params = params+delta
