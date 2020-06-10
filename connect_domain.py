@@ -292,8 +292,9 @@ class individual:
     #evaluate genome in environment with a roll-out
     def map(self, push_all=True, trace=False, against = None, test = False, print_game=False):
         global state_archive
-        individual.global_model.inject_parameters(self.genome)
-        reward, state_buffer, terminal_state, broken, the_game = individual.rollout({}, individual.global_model, individual.env, against, self.states, print_game)
+        global_model_agent = copy.deepcopy(individual.global_model)
+        global_model_agent.inject_parameters(self.genome)
+        reward, state_buffer, terminal_state, broken, the_game = individual.rollout({}, global_model_agent, individual.env, against, self.states, print_game)
 
         if test:
             return reward, terminal_state, broken, the_game
@@ -666,8 +667,8 @@ def mutate_sm_g(mutation,
     delta /= scaling
 
     #delta should be less if fitness is high
-  #  delta *= np.sqrt(1.05-fitness)
-   # print("Sum of delta changed from {} to {}".format(sum(delta/np.sqrt(1.05-fitness)), sum(delta)))
+    delta *= (1.05-fitness)
+    print("Sum of delta changed from {} to {}".format(sum(delta/np.sqrt(1.05-fitness)), sum(delta)))
 
     #generate new perturbation
     new_params = params+delta
