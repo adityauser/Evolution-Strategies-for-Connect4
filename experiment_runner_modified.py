@@ -283,7 +283,7 @@ if (__name__ == '__main__'):
         		future = executor.submit(get_child, population=population, mutation_mag=mutation_mag, evals=evals, greedy_select=greedy_select)
         		child = future.result()
         		future = executor.submit(evaluate, individual=child, test_opponents=opponents, push_all=args.state_archive)
-=        		print('Generation no. {} and Tournament no. {}'.format(evals, tournament_played))
+        		print('Generation no. {} and Tournament no. {}'.format(evals, tournament_played))
         		trial_reward, terminal_state = future.result()
         		if trial_reward/trials<=-1:
         			raise('check1')
