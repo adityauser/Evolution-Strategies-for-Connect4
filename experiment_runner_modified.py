@@ -10,7 +10,8 @@ import argparse
 import matplotlib.pyplot as plt
 from termcolor import colored
 import copy
-
+import threading 
+import concurrent.futures
 
 parser = argparse.ArgumentParser()
 #all command line options
@@ -79,11 +80,31 @@ def find_fitness(agent):
 def render_maze(pop):
     pass
 
+#takes population and gives out a child
+def get_child(population, mutation_mag, evals, greedy_select=5):
+	parents = random.sample(population, greedy_select)
+	parent = reduce(lambda x, y: x if x.fitness > y.fitness else y, parents)
+	child = parent.copy((evals, parent.identity[1]))
+	child.mutate(mutation=args.mutation, mag=mutation_mag, fitness=parent.fitness)
+	return child
+
+#evaluation
+def evaluate(individual, test_opponents, **kwargs):
+	r = 0
+	for against in test_opponents:
+		#this returns reward, terminal_state, broken, the_game
+		returns = individual.map(against=against, **kwargs)
+		r+=returns[0]
+	return r, returns
+
 
 if (__name__ == '__main__'):
 
     #initialize empty population
     population = []
+
+    #number of threads
+    threads = 4  
 
     #for testing pourpose. Here ice means we are re-evaluting.
     #Re-evaluation of performance
@@ -111,7 +132,7 @@ if (__name__ == '__main__'):
     psize = int(args.pop_size)
 
     #number of trials
-    trials = 30
+    trials = 100
 
     # Opponents for the tournament
     opponents = []
@@ -127,6 +148,8 @@ if (__name__ == '__main__'):
 
     #initialize population
     for k in range(psize):
+
+        threads = []
         robot = evolution_domain.individual((1, k+1))
 
         #initialize random parameter vector
@@ -134,10 +157,12 @@ if (__name__ == '__main__'):
 
         #evaluate in domain
         for _ in range(trials):
-            terminal, broken = robot.map(push_all=args.state_archive)
-            while broken:
-                robot.init_rand()
-                terminal, broken = robot.map(push_all=args.state_archive)
+            thread = threading.Thread(target=robot.map, args=(args.state_archive, )) 
+            thread.start()
+            threads.append(thread)
+        for thread in threads:
+            thread.join()
+
         robot.parent = None
 
         #add to population
@@ -187,33 +212,32 @@ if (__name__ == '__main__'):
         #initialize empty population for childs
         young_ones = []
 
+
         # Evaluate population performance against random agents
         test = []
-        for test_agent in population:
-            r = 0
-              #  print(id(test_agent.genome))
-            for _ in range(len(opponents)):
-            	reward, terminal_state, broken, the_game = test_agent.map(test = True)
-            	r+=reward
-            test.append(r/len(opponents))
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+        	for test_agent in population:
+        		future = executor.submit(evaluate, individual=test_agent, test_opponents=opponents, push_all=args.state_archive, test=True)
+        		r, _ = future.result()
+        		test.append(r/len(opponents))
         performance.append(test)
         if test[-1]<=-1:
             raise('check2')
 
+
+        
         # Evaluate population performance against all_opponents, basicly this is the fitness in case of population_play.
 
+        test = []
         if args.population_play and not args.fast:
-            test = []
-            for test_agent in population:
-                r = 0
-              #  print(id(test_agent.genome))
-                for against in all_opponents:
-                    reward, terminal_state, broken, the_game = test_agent.map(against=against, test=True)
-                    r+=reward
-                test.append(r/len(all_opponents))
-            perfo_allOppo.append(test)
-            if test[-1]<=-1:
-                raise('check3')
+        	with concurrent.futures.ThreadPoolExecutor() as executor:
+        		for test_agent in population:
+        			future = executor.submit(evaluate, individual=test_agent, test_opponents=all_opponents, push_all=args.state_archive, test=True)
+        			r, _ = future.result()
+        			test.append(r/len(all_opponents))
+        		perfo_allOppo.append(test)
+        		if test[-1]<=-1:
+        			raise('check3')            
 
         #Get the average fitness of population
         print (bcolors.WARNING)
@@ -235,8 +259,13 @@ if (__name__ == '__main__'):
             #parent.matchs_played = 0
             #parent.net_reward = 0
             #parent.fitness = 0
+            threads = []
             for against in opponents:
-                terminal_state, broken = parent.map(push_all=args.state_archive, against=against)
+            	thread = threading.Thread(target=parent.map, args=(args.state_archive, against))
+            	thread.start()
+            	threads.append(thread)
+            for thread in threads:
+            	thread.join()
            
             if parent.fitness<=-1:
                 print(broken, parent.fitness,"check4")
@@ -247,29 +276,25 @@ if (__name__ == '__main__'):
         ice_population_fitness.append(np.mean([x.fitness for x in population]))
 
             
-        #tournament selection and evalute in domain
-        while tournament_played < gen_length:
-            tournament_played += 1
-            print('Generation no. {} and Tournament no. {}'.format(evals, tournament_played))
-            trial_reward = 0
-            parents = random.sample(population, greedy_select)
-            parent = reduce(lambda x, y: x if x.fitness > y.fitness else y, parents)
-            child = parent.copy((evals, parent.identity[1]))
-            child.mutate(mutation=args.mutation, mag=mutation_mag, fitness=parent.fitness) 
-            for against in all_opponents:
-                terminal_state, broken = child.map(push_all=args.state_archive, against=against)
-                trial_reward+=child.reward
-            
-            if trial_reward/trials<=-1:
-            	raise('check1')	
-            print('Child average reward ' , trial_reward/trials)
-            print('child_fitness ', child.fitness)
+        #creation of new off springs, tournament selection and evalute in domain
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+        	while tournament_played < gen_length:
+        		tournament_played += 1
+        		future = executor.submit(get_child, population=population, mutation_mag=mutation_mag, evals=evals, greedy_select=greedy_select)
+        		child = future.result()
+        		future = executor.submit(evaluate, individual=child, test_opponents=opponents, push_all=args.state_archive)
+=        		print('Generation no. {} and Tournament no. {}'.format(evals, tournament_played))
+        		trial_reward, terminal_state = future.result()
+        		if trial_reward/trials<=-1:
+        			raise('check1')
+        		print('Child average reward ' , trial_reward/trials)
+        		print('child_fitness ', child.fitness)
 
-            young_ones.append(child)
-     
-            if do_display:
-            	print(terminal_state)
+        		young_ones.append(child)
 
+        		if do_display:
+        			print(terminal_state[0])
+       
         # Add young_ones to population
         for child in young_ones:
         	dominance[child.identity[1]-1] += 1

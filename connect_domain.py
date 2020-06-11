@@ -290,7 +290,7 @@ class individual:
         pass
 
     #evaluate genome in environment with a roll-out
-    def map(self, push_all=True, trace=False, against = None, test = False, print_game=False):
+    def map(self, push_all=True, against = None, test = False, print_game=False):
         global state_archive
         global_model_agent = copy.deepcopy(individual.global_model)
         global_model_agent.inject_parameters(self.genome)
@@ -320,7 +320,7 @@ class individual:
             #self.matchs_played+=1
             pass
 
-        return terminal_state, broken
+        return reward, terminal_state, broken
 
     def prepare(self):
         pass
@@ -349,7 +349,7 @@ class individual:
 
 #Method to conduct maze rollout
 @staticmethod
-def do_rollout(args, model, env, against, state_buffer=None, print_game=False, render=False, screen=None, trace=False):
+def do_rollout(args, model, env, against, state_buffer=None, print_game=False, render=False, screen=None):
     if state_buffer==None:
         state_buffer = collections.deque([], 400)
 
