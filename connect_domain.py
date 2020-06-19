@@ -290,10 +290,11 @@ class individual:
         pass
 
     #evaluate genome in environment with a roll-out
-    def map(self, push_all=True, trace=False, against = None, test = False, print_game=False):
+    def map(self, push_all=True, against = None, test = False, print_game=False):
         global state_archive
-        individual.global_model.inject_parameters(self.genome)
-        reward, state_buffer, terminal_state, broken, the_game = individual.rollout({}, individual.global_model, individual.env, against, self.states, print_game)
+        global_model_agent = copy.deepcopy(individual.global_model)
+        global_model_agent.inject_parameters(self.genome)
+        reward, state_buffer, terminal_state, broken, the_game = individual.rollout({}, global_model_agent, individual.env, against, self.states, print_game)
 
         if test:
             return reward, terminal_state, broken, the_game
@@ -319,7 +320,7 @@ class individual:
             #self.matchs_played+=1
             pass
 
-        return terminal_state, broken
+        return reward, terminal_state, broken
 
     def prepare(self):
         pass
@@ -348,7 +349,7 @@ class individual:
 
 #Method to conduct maze rollout
 @staticmethod
-def do_rollout(args, model, env, against, state_buffer=None, print_game=False, render=False, screen=None, trace=False):
+def do_rollout(args, model, env, against, state_buffer=None, print_game=False, render=False, screen=None):
     if state_buffer==None:
         state_buffer = collections.deque([], 400)
 
@@ -666,8 +667,8 @@ def mutate_sm_g(mutation,
     delta /= scaling
 
     #delta should be less if fitness is high
-  #  delta *= np.sqrt(1.05-fitness)
-   # print("Sum of delta changed from {} to {}".format(sum(delta/np.sqrt(1.05-fitness)), sum(delta)))
+    #delta *= -np.log((fitness+1)/2)
+    #print("Sum of delta changed from {} to {}".format(sum(delta/np.log((fitness+1)/2)), sum(delta)))
 
     #generate new perturbation
     new_params = params+delta
@@ -777,4 +778,3 @@ if __name__ == '__main__':
     robot = individual()
     robot.load(solution_file)
     robot.render(screen)
-
