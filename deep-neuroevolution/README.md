@@ -37,11 +37,17 @@ install requirements
 ```
 pip install -r requirements.txt
 ```
+Install [OpenSpiel](https://github.com/deepmind/open_spiel). <br/>
 If you plan to use the mujoco env, make sure to follow [mujoco-py](https://github.com/openai/mujoco-py)'s readme about how to install mujoco correctly
 
 launch redis
 ```
 . scripts/local_run_redis.sh
+```
+
+launch sample ES experiment for connect_four
+```
+. scripts/local_run_exp.sh es configurations/connect_four_es.json
 ```
 
 launch sample ES experiment
@@ -75,6 +81,7 @@ launch sample Random Search experiment
 
 visualize results by running a policy file
 ```
+python -m scripts.viz 'connect_four' <YOUR_H5_FILE>
 python -m scripts.viz 'FrostbiteNoFrameskip-v4' <YOUR_H5_FILE>
 python -m scripts.viz 'Humanoid-v1' <YOUR_H5_FILE>
 ```
