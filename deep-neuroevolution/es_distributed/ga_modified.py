@@ -1,8 +1,52 @@
 from .es import *
+from open_spiel.python import rl_environment
 
 
 GATask = namedtuple('GATask', ['params', 'population', 'ob_mean', 'ob_std', 'timestep_limit'])
 
+
+class OpenSpielEnv(rl_environment.Environment):
+    def __init__(self, game, player=0, time_step=None):   
+        super().__init__(game)
+        self.time_step = time_step if not time_step==None else self.reset()
+        self.player = player
+        self.observation_space = ObsWraps((self.observation_spec()["legal_actions"][0], self.observation_spec()["info_state"][0]//(self.observation_spec()["legal_actions"][0]*3), 3))
+        self.action_space = ActionWraps(self.action_spec()["num_actions"], self)
+        self.obs = self.time_step.observations['info_state'][self.player]        
+        self.obs = np.transpose(np.reshape(np.array(self.obs), (3, int(len(self.obs)/(3*7)), 7)))
+       # print(self.obs)
+        
+    def reset(self):
+        self.time_step = super().reset()
+        self.player = 0
+        #print(self.get_state)
+        self.obs = self.time_step.observations['info_state'][self.player]        
+        self.obs = np.transpose(np.reshape(np.array(self.obs), (3, int(len(self.obs)/(3*7)), 7)))
+        return self.time_step
+
+    def step(self, action):
+        self.time_step = super().step([action])
+        done = self.time_step.last()
+        if done:
+            self.player = (self.player+1)%2
+        else:            
+            self.player = self.time_step.observations['current_player']
+        
+        self.obs = self.time_step.observations['info_state'][self.player]        
+        self.obs = np.transpose(np.reshape(np.array(self.obs), (3, int(len(self.obs)/(3*7)), 7)))
+        rwd = self.time_step.rewards
+        info = self.time_step.observations['legal_actions'][self.player]
+        if done:
+            self.reset()
+        return self.obs, rwd, done, info
+
+    def render(self):
+        print(self.get_state)
+
+    def seed(self, a):
+        pass
+    def close(self):
+        pass
 
 def setup(exp, single_threaded):
     import gym
@@ -10,7 +54,13 @@ def setup(exp, single_threaded):
     from . import policies, tf_util
 
     config = Config(**exp['config'])
-    env = gym.make(exp['env_id'])
+    if not exp['policy']['type'] == "ESBoardGame":
+        env = gym.make(exp['env_id'])
+    elif exp['policy']['type'] == "ESBoardGame":
+        game = 'connect_four'
+        env = OpenSpielEnv(game)
+    else:
+        raise("NotImplementedError")
     if exp['env_id'].endswith('NoFrameskip-v4'):
         from .atari_wrappers import wrap_deepmind
         env = wrap_deepmind(env)

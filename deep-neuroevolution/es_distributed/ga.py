@@ -1,16 +1,66 @@
 from .es import *
+from open_spiel.python import rl_environment
 
 
 GATask = namedtuple('GATask', ['params', 'population', 'ob_mean', 'ob_std', 'timestep_limit'])
 
 
+class OpenSpielEnv(rl_environment.Environment):
+    def __init__(self, game, player=0, time_step=None):   
+        super().__init__(game)
+        self.time_step = time_step if not time_step==None else self.reset()
+        self.player = player
+        self.observation_space = ObsWraps((self.observation_spec()["legal_actions"][0], self.observation_spec()["info_state"][0]//(self.observation_spec()["legal_actions"][0]*3), 3))
+        self.action_space = ActionWraps(self.action_spec()["num_actions"], self)
+        self.obs = self.time_step.observations['info_state'][self.player]        
+        self.obs = np.transpose(np.reshape(np.array(self.obs), (3, int(len(self.obs)/(3*7)), 7)))
+       # print(self.obs)
+        
+    def reset(self):
+        self.time_step = super().reset()
+        self.player = 0
+        #print(self.get_state)
+        self.obs = self.time_step.observations['info_state'][self.player]        
+        self.obs = np.transpose(np.reshape(np.array(self.obs), (3, int(len(self.obs)/(3*7)), 7)))
+        return self.time_step
+
+    def step(self, action):
+        self.time_step = super().step([action])
+        done = self.time_step.last()
+        if done:
+            self.player = (self.player+1)%2
+        else:            
+            self.player = self.time_step.observations['current_player']
+        
+        self.obs = self.time_step.observations['info_state'][self.player]        
+        self.obs = np.transpose(np.reshape(np.array(self.obs), (3, int(len(self.obs)/(3*7)), 7)))
+        rwd = self.time_step.rewards
+        info = self.time_step.observations['legal_actions'][self.player]
+        if done:
+            self.reset()
+        return self.obs, rwd, done, info
+
+    def render(self):
+        print(self.get_state)
+
+    def seed(self, a):
+        pass
+    def close(self):
+        pass
+
 def setup(exp, single_threaded):
     import gym
- #   gym.undo_logger_setup()
+   # gym.undo_logger_setup()
     from . import policies, tf_util
 
     config = Config(**exp['config'])
-    env = gym.make(exp['env_id'])
+    if not exp['policy']['type'] == "GABoardGame":
+        env = gym.make(exp['env_id'])
+    elif exp['policy']['type'] == "GABoardGame":
+        game = 'connect_four'
+        env = OpenSpielEnv(game)
+    else:
+        raise("NotImplementedError")
     if exp['env_id'].endswith('NoFrameskip-v4'):
         from .atari_wrappers import wrap_deepmind
         env = wrap_deepmind(env)
@@ -140,7 +190,8 @@ def run_master(master_redis_cfg, log_dir, exp):
             returns_n2.extend(r.returns_n2)
         noise_inds_n = np.array(noise_inds_n)
         returns_n2 = np.array(returns_n2)
-        lengths_n2 = np.array([r.lengths_n2 for r in curr_task_results])
+        #lengths_n2 = np.array([r.lengths_n2 for r in curr_task_results])
+        lengths_n2 = np.concatenate([r.lengths_n2 for r in curr_task_results])
         # Process returns
         idx = np.argpartition(returns_n2, (-population_size, -1))[-1:-population_size-1:-1]
         population = noise_inds_n[idx]
@@ -162,7 +213,7 @@ def run_master(master_redis_cfg, log_dir, exp):
             old_tslimit = tslimit
             tslimit = int(tslimit_incr_ratio * tslimit)
             logger.info('Increased timestep limit from {} to {}'.format(old_tslimit, tslimit))
-
+        #raise TypeError("lengths_n2", len(curr_task_results), lengths_n2.shape, lengths_n2.mean(), lengths_n29.shape)
         step_tend = time.time()
         tlogger.record_tabular("EpRewMax", returns_n2.max())
         tlogger.record_tabular("EpRewMean", returns_n2.mean())
@@ -227,7 +278,7 @@ def run_worker(master_redis_cfg, relay_redis_cfg, noise, *, min_task_runtime=.2)
         if rs.rand() < config.eval_prob:
             # Evaluation: noiseless weights and noiseless actions
             policy.set_trainable_flat(task_data.params)
-            eval_rews, eval_length = policy.rollout(env)  # eval rollouts don't obey task_data.timestep_limit
+            eval_rews, eval_length, _ = policy.rollout(env)  # eval rollouts don't obey task_data.timestep_limit
             eval_return = eval_rews.sum()
             logger.info('Eval result: task={} return={:.3f} length={}'.format(task_id, eval_return, eval_length))
             worker.push_result(task_id, Result(

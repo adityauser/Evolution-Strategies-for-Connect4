@@ -515,7 +515,123 @@ class GAAtariPolicy(Policy):
             return rews, t, np.array(obs), np.array(novelty_vector)
         return rews, t, np.array(novelty_vector)
 
+class GABoardGame(Policy):
+    def _initialize(self, ob_space, ac_space, nonlin_type, ac_init_std=0.1):
+        self.ob_space_shape = ob_space.shape
+        self.ac_space = ac_space
+        self.ac_init_std = ac_init_std
+        self.num_actions = self.ac_space.n
+        self.nonlin = {'tanh': tf.tanh, 'relu': tf.nn.relu, 'lrelu': U.lrelu, 'elu': tf.nn.elu}[nonlin_type]
 
+
+        with tf.variable_scope(type(self).__name__) as scope:
+            o = tf.placeholder(tf.float32, [None] + list(self.ob_space_shape))
+
+            a = self._make_net(o)
+            self._act = U.function([o] , a)
+        return scope
+
+    def _make_net(self, o):
+        x = o
+        x = self.nonlin(U.conv(x, name='conv1', num_outputs=16, kernel_size=8, stride=4, std=1.0))
+        x = self.nonlin(U.conv(x, name='conv2', num_outputs=32, kernel_size=4, stride=2, std=1.0))
+
+        x = U.flattenallbut0(x)
+        x = self.nonlin(U.dense(x, 256, 'fc', U.normc_initializer(1.0), std=1.0))
+
+        a = U.dense(x, self.num_actions, 'out', U.normc_initializer(self.ac_init_std), std=self.ac_init_std)
+
+        return a
+
+    @property
+    def needs_ob_stat(self):
+        return False
+
+    @property
+    def needs_ref_batch(self):
+        return False
+
+    # Dont add random noise since action space is discrete
+    def act(self, train_vars, random_stream=None):
+        return self._act(train_vars)
+
+    def rollout(self, env, *, render=False, timestep_limit=None, save_obs=False, random_stream=None, worker_stats=None, policy_seed=None, trails=20):
+        """
+        If random_stream is provided, the rollout will take noisy actions with noise drawn from that stream.
+        Otherwise, no action noise will be added.
+        """
+        env_timestep_limit = env.max_game_length + 1
+
+        timestep_limit = env_timestep_limit if timestep_limit is None else min(timestep_limit, env_timestep_limit)
+        rews = []; novelty_vector = []
+        rollout_details = {}
+        t = 0
+        match_no = 0
+
+        if save_obs:
+            obs = []
+
+        if policy_seed:
+            env.seed(policy_seed)
+            np.random.seed(policy_seed)
+            if random_stream:
+                random_stream.seed(policy_seed)
+
+        ob = env.reset()
+        while match_no<trails:
+            turn = random.sample([1, 0], 1)[0]
+            for _ in range(timestep_limit):
+                start_time = time.time()
+                player = env.get_state.current_player()
+                if (player + turn)%2 == 0:
+                    acs = self.act(np.array([env.obs]), random_stream=random_stream)[0]
+                    ac = np.argmax(np.array([acs[i] if i in env.get_state.legal_actions() else float(-np.inf) for i in range(7)]))
+
+                elif (player + turn)%2 == 1:
+                    ac = env.action_space.sample()
+
+
+                if worker_stats:
+                    worker_stats.time_comp_act += time.time() - start_time
+
+                if save_obs:
+                    obs.append(ob)
+
+                start_time = time.time()
+                ob, rew, done, info = env.step(ac)
+                '''
+                #obs yaha save hona chaiye na 
+                if save_obs:
+                    obs.append(ob)
+                '''
+                if worker_stats:
+                    worker_stats.time_comp_step += time.time() - start_time
+
+                rews.append(rew[turn])
+
+                t += 1
+                if render:
+                    if (player + turn)%2 == 0:
+                        print("It's agents' turn. Player: ", player)
+                        print("Moves probablity: ", acs)
+                    else:
+                        print("It's opponents' turn. Player: ", player)
+                    env.render()
+                if done:
+                    match_no+=1
+                    if render:
+                        print("Trail number:", match_no)
+                        #env.render()
+                        print("Reward:", rew[turn])
+                    ob = env.reset()
+                    break
+
+        rews = np.array(rews, dtype=np.float32)
+        novelty_vector = np.transpose(ob)[0]
+        if save_obs:
+            return rews, t, np.array(obs), np.array(novelty_vector)
+        return rews, t, np.array(novelty_vector)
+        
 class ESBoardGame(Policy):
     def _initialize(self, ob_space, ac_space):
         self.ob_space_shape = ob_space.shape

@@ -133,9 +133,12 @@ class _Logger(object):
     def dump_tabular(self):
         # Create strings for printing
         key2str = OrderedDict()
+        #raise TypeError("fuck", self.name2val.items())
         for (key,val) in self.name2val.items():
             if hasattr(val, "__float__"): valstr = "%-8.3g"%val
+            #if hasattr(val, "__float__"): valstr = str(val) + "-8.3g"
             else: valstr = val
+            print(key)
             key2str[self._truncate(key)]=self._truncate(valstr)
         keywidth = max(map(len, key2str.keys()))
         valwidth = max(map(len, key2str.values()))
