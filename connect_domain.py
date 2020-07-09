@@ -348,7 +348,6 @@ class individual:
         print (model.extract_parameters().shape )
 
 #Method to conduct maze rollout
-@staticmethod
 def do_rollout(args, model, env, against, state_buffer=None, print_game=False, render=False, screen=None):
     if state_buffer==None:
         state_buffer = collections.deque([], 400)
@@ -367,7 +366,7 @@ def do_rollout(args, model, env, against, state_buffer=None, print_game=False, r
     action = None
 
     if not against==None:
-        opponent_model = copy.deepcopy(against.global_model)
+        opponent_model = copy.deepcopy(against.model)
         opponent_model.inject_parameters(against.genome)
 
     # Rollout
@@ -409,10 +408,11 @@ def do_rollout(args, model, env, against, state_buffer=None, print_game=False, r
                     broken=True
                     break
                 action = np.random.choice(len(actions), 1, p=actions)[0]
+                #action = np.argmax(actions)
 
                 
         elif (player + turn)%2 == 1:
-            logit = model(Variable(obs, volatile=True), torch.from_numpy(mask))
+            logit = model.forward(Variable(obs, volatile=True), torch.from_numpy(mask))
             actions = logit.data.numpy()[0]
 
             if np.isnan(actions).any():
@@ -732,7 +732,6 @@ def mutate_sm_g(mutation,
 
     return new_params
 
-
 model = None
 controller_settings = None
 
@@ -751,6 +750,7 @@ def setup(maze,_controller_settings):
     individual.rollout = do_rollout
     individual.global_model = model
 
+
 '''
 #breadcrumb finess calculation (given breadcrumb array)
 def _breadcrumb_fitness(ind):
@@ -764,7 +764,6 @@ def _breadcrumb_fitness(ind):
 
 def _c4_fitness(ind):
     ind.fitness = ind.net_reward/ind.matchs_played
-
     #All broken rollouts are ignored so, basicly this if statement is redundant.
     if ind.broken:
      ind.fitness = -1e8
@@ -775,6 +774,8 @@ if __name__ == '__main__':
     solution_file="solution.npy"
 
     setup({'maze':"connect_four.txt"},{'layers':64,'af':'tanh','size':125,'residual':True})
+
     robot = individual()
     robot.load(solution_file)
     robot.render(screen)
+
