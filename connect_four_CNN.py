@@ -9,6 +9,7 @@ from torch.autograd.gradcheck import zero_gradients
 from torch.autograd import Variable
 import torchvision.models as models
 from torchvision import transforms
+import copy
 
 import time
 from scipy.optimize import minimize_scalar
@@ -171,6 +172,7 @@ class individual:
         self.matchs_played = 0
         self.net_reward = 0
         self.identity = identity
+        self.states = collections.deque([], 100)
 
         if self.percolate:
             self.__class__.instances.append(weakref.proxy(self))
@@ -251,20 +253,20 @@ class individual:
         pass
 
     #evaluate genome in environment with a roll-out
-    def map(self, push_all=True, trace=False, against = None, test = False):
+    def map(self, push_all=True, against = None, test = False, print_game=False):
         global state_archive
-        individual.global_model.inject_parameters(self.genome)
-        reward, state_buffer, terminal_state, broken = individual.rollout({}, individual.global_model, individual.env, against)
+        global_model_agent = copy.deepcopy(individual.global_model)
+        global_model_agent.inject_parameters(self.genome)
+        reward, state_buffer, terminal_state, broken, the_game = individual.rollout({}, global_model_agent, individual.env, against, self.states, print_game)
 
         if test:
-            return reward, terminal_state, broken
-
+            return reward, terminal_state, broken, the_game
 
         if push_all:
             state_archive = state_buffer
             self.states = state_buffer
         else:
-            print("not using all states")
+            #print("not using all states")
             state_archive.appendleft(random.choice(state_buffer))
             self.states = None
 
@@ -277,7 +279,11 @@ class individual:
             self.matchs_played+=1
             _c4_fitness(self)
 
-        return terminal_state, broken
+        else:
+            #self.matchs_played+=1
+            pass
+
+        return reward, terminal_state, broken
 
     def prepare(self):
         pass
@@ -306,10 +312,13 @@ class individual:
 
 #Method to conduct maze rollout
 @staticmethod
-def do_rollout(args, model, env, against, render=False, screen=None, trace=False):
-    state_buffer = collections.deque([], 400)
+def do_rollout(args, model, env, against, state_buffer=None, print_game=False, render=False, screen=None):
+    if state_buffer==None:
+        state_buffer = collections.deque([], 400)
 
     transform = transforms.Compose([transforms.ToTensor()])
+
+    the_game = []
 
     #TODO: Replace the random selection of first turn with some deterministic method.
     turn = random.sample([1, 0], 1)[0]
@@ -363,7 +372,7 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
 
                 
         elif (player + turn)%2 == 1:
-            logit = model(Variable(obs, volatile=True), torch.from_numpy(mask))
+            logit = model.forward(Variable(obs, volatile=True), torch.from_numpy(mask))
             actions = logit.data.numpy()[0]
 
             if np.isnan(actions).any():
@@ -381,6 +390,16 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
 
 
         state.apply_action(action)
+
+        #print the game
+        if print_game:
+            if (player + turn)%2 == 1:
+                the_game.append(["It's agents' turn. Player: ", player])
+                the_game.append(["Moves probablity: ", actions])
+            else:
+                the_game.append(["It's opponents' turn. Player: ", player])
+            the_game.append(["Player move", action])
+            the_game.append([copy.deepcopy(state)])
         
         reward = state.returns()[(1 + turn)%2]
     
@@ -398,7 +417,7 @@ def do_rollout(args, model, env, against, render=False, screen=None, trace=False
         obs = np.transpose(np.reshape(np.array(state.observation_tensor()), (3, int(len(state.observation_tensor())/(3*7)), 7)))
 
 
-    return this_model_return, state_buffer, state, broken
+    return this_model_return, state_buffer, state, broken, the_game
 
 
 def mutate_plain(params, mag=0.05,**kwargs):

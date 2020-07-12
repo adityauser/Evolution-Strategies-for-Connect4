@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable,grad
-import torch
 import torch.optim as optim
 from torch.nn.modules.batchnorm import _BatchNorm
 from torch.autograd.gradcheck import zero_gradients
@@ -196,7 +195,7 @@ class individual:
     rollout = None
     instances = []
 
-    def __init__(self, identity):
+    def __init__(self, identity, mag):
         self.noise = 0.05
         self.smog = False
         self.id = uuid.uuid4().int
@@ -209,15 +208,17 @@ class individual:
         self.matchs_played = 0
         self.net_reward = 0
         self.identity = identity
+        self.mag = mag
         self.states = collections.deque([], 100)
 
         if self.percolate:
             self.__class__.instances.append(weakref.proxy(self))
 
     def copy(self, identity, percolate=False): 
-        new_ind = individual(identity)
+        new_ind = individual(identity, self.mag)
         new_ind.genome = self.genome.copy()
         new_ind.states = self.states
+        new_ind.mag = self.mag
 
         if self.percolate:
             new_ind.parent = self
@@ -366,7 +367,7 @@ def do_rollout(args, model, env, against, state_buffer=None, print_game=False, r
     action = None
 
     if not against==None:
-        opponent_model = copy.deepcopy(against.model)
+        opponent_model = copy.deepcopy(against.global_model)
         opponent_model.inject_parameters(against.genome)
 
     # Rollout
