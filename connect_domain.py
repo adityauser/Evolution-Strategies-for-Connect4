@@ -22,6 +22,7 @@ import pyspiel
 import re
 import copy
 
+
 do_cuda = False 
 if not do_cuda:
     torch.backends.cudnn.enabled = False
@@ -289,6 +290,23 @@ class individual:
     def render(self, screen):
         pass
 
+    def get_novelty_vector(self):
+        global_model_agent = copy.deepcopy(individual.global_model)
+        global_model_agent.inject_parameters(self.genome)
+
+        sz = min(100, len(state_archive))
+        #np_obs = random.sample(state_archive, sz)
+        np_obs = state_archive
+        verification_states = Variable(
+            torch.from_numpy(np.array([i[0] for i in np_obs])), requires_grad=False)
+        verification_mask = Variable(
+            torch.from_numpy(np.array([i[1] for i in np_obs])), requires_grad=False)
+
+        output = global_model_agent(verification_states, verification_mask.squeeze(1))
+        novelty_vector = output.data.numpy()
+        novelty_vector = [np.argmax(out) for out in novelty_vector]
+        return novelty_vector
+
     #evaluate genome in environment with a roll-out
     def map(self, push_all=True, against = None, test = False, print_game=False):
         global state_archive
@@ -366,7 +384,7 @@ def do_rollout(args, model, env, against, state_buffer=None, print_game=False, r
     action = None
 
     if not against==None:
-        opponent_model = copy.deepcopy(against.model)
+        opponent_model = copy.deepcopy(against.global_model)
         opponent_model.inject_parameters(against.genome)
 
     # Rollout

@@ -15,6 +15,9 @@ import threading
 import concurrent.futures
 import pickle
 
+from sklearn.cluster import KMeans
+
+
 parser = argparse.ArgumentParser()
 #all command line options
 parser.add_argument("--display", help="turn on rendering", action="store_true")
@@ -144,6 +147,9 @@ if (__name__ == '__main__'):
     #number of trials
     trials = 30
 
+    #cluster model
+    cluster_model = KMeans(n_clusters=int(trials/6), n_jobs=-1)
+
     # Opponents for the tournament
     opponents = []
     perfo_allOppo = []
@@ -177,6 +183,9 @@ if (__name__ == '__main__'):
 
         #add to population
         population.append(robot)
+
+    X = [indv.get_novelty_vector() for indv in population]
+    cluster_model.fit(X)
     
     print("population_fitness ", np.mean([x.fitness for x in population]))
     values = [[copy.deepcopy(ind), ind.fitness] for ind in population]
@@ -212,6 +221,7 @@ if (__name__ == '__main__'):
     mutation_mag = float(args.mutation_mag)
 
     update_eval = 0
+    update_novelty = 0
 
     
     if args.save_reward:
@@ -361,11 +371,35 @@ if (__name__ == '__main__'):
         #Add some new members in the oppents team.
         if args.population_play and population_fitness[-1]>0.80:
             update_eval = evals
+            update_novelty = evals
+
+            X = [indv.get_novelty_vector() for indv in population]
+            yhat = cluster_model.predict(X)
+            pop_np = np.array(population)
+            for cluster in range(int(trials/6)):
+            	pop_cluster = list(pop_np[np.where(yhat == cluster)])
+            	print(len(pop_cluster))
+            	if len(pop_cluster)>0:
+            		new_ops = random.sample(pop_cluster, int(np.ceil(len(pop_cluster)/5)))
+            	else:
+            		new_ops = random.sample(population, int(psize/25))
+            	new_op = copy.deepcopy(reduce(lambda x, y: x if x.fitness > y.fitness else y, new_ops))
+            	opponents[int(np.random.rand()*(len(opponents)-random_opponent))] = new_op
+            	all_opponents.append(new_op)
+            del pop_np
+            '''
             for _ in range(int(trials/6)):
                 new_ops = random.sample(population, int(psize/25))
-                new_op = reduce(lambda x, y: x if x.fitness > y.fitness else y, new_ops)
+                new_op = copy.deepcopy(reduce(lambda x, y: x if x.fitness > y.fitness else y, new_ops))
                 opponents[int(np.random.rand()*(len(opponents)-random_opponent))] = new_op
                 all_opponents.append(new_op)
+            '''
+        # Train the KNN agent
+        if (evals-update_novelty)%3==0:
+        	#cluster_model = KMeans(n_clusters=int(trials/6))
+            X = [indv.get_novelty_vector() for indv in population]
+            cluster_model.fit(X)
+
 
         if (evals-update_eval)%20==0:
             update_eval = evals
@@ -380,7 +414,7 @@ if (__name__ == '__main__'):
 				
         if args.population_play:
             file = open('PopulationPlay/'+args.name+'/dominance.txt','a') 
-            dbfile = open('PopulationPlay/'+args.name+'/elite_agent', 'ab') 
+            #dbfile = open('PopulationPlay/'+args.name+'/elite_agent', 'ab') 
             np.save('PopulationPlay/'+args.name+'/performance', performance)
             np.save('PopulationPlay/'+args.name+'/performance_elite', performance_elite)
             np.save('PopulationPlay/'+args.name+'/population_fitness', population_fitness)
@@ -393,14 +427,14 @@ if (__name__ == '__main__'):
             np.save('test/'+args.name+'/performance_elite', performance_elite)
             np.save('test/'+args.name+'/population_fitness', population_fitness)
             np.save('test/'+args.name+'/population_elite_fitness', population_elite_fitness)
-            dbfile = open('test/'+args.name+'/elite_agent', 'ab') 
+           # dbfile = open('test/'+args.name+'/elite_agent', 'ab') 
             file = open('test/'+args.name+'/dominance.txt','a') 
         [file.write(str(x) + " ") for x in dominance]
         file.write('\n')
         file.close() 
         
-        pickle.dump(elite, dbfile)
-        dbfile.close() 
+        #pickle.dump(elite, dbfile)
+       # dbfile.close() 
 
         
 
