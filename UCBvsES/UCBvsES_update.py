@@ -33,8 +33,10 @@ args = parser.parse_args()
 
 
 if args.save_result:
-    if not os.path.exists('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name):
+    try:
         os.makedirs('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name)
+    except:
+        pass
 
 
 class Enviroment:
