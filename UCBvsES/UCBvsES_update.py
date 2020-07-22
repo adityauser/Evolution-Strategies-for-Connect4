@@ -49,7 +49,7 @@ class Enviroment:
         
         self.best_arm = np.argmax([[self.arms[arm] for arm in range(self.no_arms)]])
         
-    def update(self):
+    def reset(self):
         for arm in range(self.no_arms):
             self.arms[arm] = np.random.rand()
         self.best_arm = np.argmax([[self.arms[arm] for arm in range(self.no_arms)]])
@@ -109,7 +109,7 @@ class AgentUCB:
         
         if all([self.info[arm]['is_visited'] for arm in range(self.no_arms)]):
             for arm in range(self.no_arms):
-                self.info[arm]['likely'] = self.info[arm]['value'] +                 np.sqrt((2*np.log(self.round))/self.info[arm]['no_visited'])
+                self.info[arm]['likely'] = self.info[arm]['value'] + np.sqrt((2*np.log(self.round))/self.info[arm]['no_visited'])
                 
             
         
@@ -121,11 +121,13 @@ class AgentUCB:
 import torch
 import torch.nn as nn
 import torch.nn.functional as F 
-from torch.autograd import Variable
+from torch.autograd import Variable,grad
 
 import copy
 import operator
+import collections
 
+state_archive = collections.deque([], 100)
 
 class Model(torch.nn.Module):
     def __init__(self, num_inputs, action_space,settings={}):
@@ -149,7 +151,7 @@ class Model(torch.nn.Module):
         self._af = af
         self.af = af()
         self.sigmoid = oaf()
-        self.softmax = nn.Softmax(dim=0)
+        self.softmax = nn.Softmax(dim=1)
 
         #first fully-connected layer changing from input-size representation to hidden-size representation
         self.fc1 = nn.Linear(num_inputs, sz, bias=_b) 
@@ -169,7 +171,7 @@ class Model(torch.nn.Module):
     def forward(self, inputs, intermediate=None, debug=False):
 
         x = inputs
-        x = torch.cat(x)
+        x = torch.cat(x, axis=1)
         #fully connection input -> hidden
         x = self.fc1(x.float())
             
@@ -189,8 +191,8 @@ class Model(torch.nn.Module):
         
         #output layer
         x = self.fc_out(x)
-        if args.noise:
-            #Add noise
+        #Add noise
+        if args.noise:            
             x = x+torch.autograd.Variable(torch.randn(x.size()).cpu() * self.stddev)
         #softmax
         x = self.softmax(x)
@@ -241,7 +243,9 @@ class Individual:
         self.net_rwd = 0
         self.score = 0
         self.fitness = 0
+        self.matches = 0
         self.played = False
+        self.buffer = []
         self.model = Model(no_arms*2, no_arms)
         self.info = {}
         for arm in range(self.no_arms):
@@ -250,34 +254,216 @@ class Individual:
             self.info[arm]['value'] = 0
         
     def pull(self):
-        visits = torch.Tensor(np.array([self.info[arm]['no_visited'] for arm in range(self.no_arms)]))
-        values = torch.Tensor(np.array([self.info[arm]['value'] for arm in range(self.no_arms)]))
+        visits = torch.Tensor([np.array([self.info[arm]['no_visited'] for arm in range(self.no_arms)])])
+        values = torch.Tensor([np.array([self.info[arm]['value'] for arm in range(self.no_arms)])])
         actions = self.model([visits, values])
+        self.buffer.append([visits[0].numpy(), values[0].numpy()])
+
         try:
-            arm = np.random.choice(self.no_arms, 1, p=actions.detach().numpy())[0]
+            arm = np.random.choice(self.no_arms, 1, p=actions[0].detach().numpy())[0]
         except:
-            raise TypeError("check", actions)
+            raise TypeError('actions:', actions)
+        
         self.info[arm]['no_visited'] += 1
         return arm
     
     def reset(self):
+        self.buffer = []
         self.info = {}
         for arm in range(self.no_arms):
             self.info[arm] = {}
             self.info[arm]['no_visited'] = 0
             self.info[arm]['value'] = 0
+
     
-    def mutate(self, mu, sigma=0.1, mag=None):
+    def mutate(self, mag=None, **kwargs):
         if mag==None:
             mag = self.mag
         parameters = self.model.extract_parameters()
-        pertubation = np.array([np.random.normal(loc=mean, scale=mag) for mean in mu])
-        updated_paramaters = pertubation
         child = Individual(self.no_arms, self.mag, self.trials)
-        child.model.inject_parameters(updated_paramaters.astype(float)) 
+        genome = self.mutate_sm_g('SM-G-SO', parameters, child.model, states=None, mag=mag, **kwargs)
+        child.model.inject_parameters(genome.astype(float)) 
         return child
     
+    def mutate_sm_g(self, mutation, params, model, verbose=False, states=None, mag=0.1, **kwargs):
+
+        global state_archive
+
+        #inject parameters into current model
+        model.inject_parameters(params.copy())
+
+        #if no states passed in, use global state archive
+        if states == None:
+            states = state_archive
+
+        #sub-sample experiences from parent
+     #   print(states[-1], states)
+        sz = min(100,len(states))
+
+
+        np_obs = random.sample(states, sz)
+       # print(len(np_obs[0]))
+        verification_states = Variable(
+            torch.from_numpy(np.array([i[0] for i in np_obs])), requires_grad=False)
+        verification_mask = Variable(
+            torch.from_numpy(np.array([i[1] for i in np_obs])), requires_grad=False)
+       # print("verification_mask", verification_mask.size(), verification_mask.squeeze(1))
+
+        #run experiences through model
+        #NOTE: for efficiency, could cache these during actual evalution instead of recalculating
+        old_policy = model([verification_states, verification_mask])
+        num_outputs = old_policy.size()[1]
+
+        abs_gradient=False 
+        avg_over_time=False
+        second_order=False
+
+        if mutation.count("ABS")>0:
+            abs_gradient=True
+            avg_over_time=True
+        if mutation.count("SO")>0:
+            second_order=True
+
+        #generate normally-distributed perturbation
+        delta = np.random.randn(*params.shape).astype(np.float32)*mag
+
+        if second_order:
+            if verbose:
+                print ('SM-G-SO')
+            np_copy = np.array(old_policy.data.numpy(),dtype=np.float32)
+            _old_policy_cached = Variable(torch.from_numpy(np_copy), requires_grad=False)
+            loss =  ((old_policy-_old_policy_cached)**2).sum(1).mean(0)
+            loss_gradient = grad(loss, model.parameters(), create_graph=True)
+            flat_gradient = torch.cat([grads.view(-1) for grads in loss_gradient]) #.sum()
+
+            direction = (delta/ np.sqrt((delta**2).sum()))
+            direction_t = Variable(torch.from_numpy(direction),requires_grad=False)
+            grad_v_prod = (flat_gradient * direction_t).sum()
+            second_deriv = torch.autograd.grad(grad_v_prod, model.parameters())
+            sensitivity = torch.cat([g.contiguous().view(-1) for g in second_deriv])
+            scaling = torch.sqrt(torch.abs(sensitivity).data)
+
+        elif not abs_gradient:
+            print ("SM-G-SUM")
+            tot_size = model.count_parameters()
+            jacobian = torch.zeros(num_outputs, tot_size)
+            grad_output = torch.zeros(*old_policy.size())
+
+            for i in range(num_outputs):
+                model.zero_grad()   
+                grad_output.zero_()
+                grad_output[:, i] = 1.0
+                old_policy.backward(grad_output, retain_graph=True)
+                jacobian[i] = torch.from_numpy(model.extract_grad())
+
+            scaling = torch.sqrt(  (jacobian**2).sum(0) )
+
+        else:
+            print ("SM-G-ABS")
+            #NOTE: Expensive because quantity doesn't slot naturally into TF/pytorch framework
+            tot_size = model.count_parameters()
+            jacobian = torch.zeros(num_outputs, tot_size, sz)
+            grad_output = torch.zeros([1,num_outputs]) #*old_policy.size())
+
+            for i in range(num_outputs):
+                for j in range(sz):
+                    old_policy_j = model([verification_states[j:j+1], verification_mask.squeeze(1)[j:j+1]])
+                    model.zero_grad()   
+                    grad_output.zero_()
+
+                    grad_output[0, i] = 1.0
+
+                    old_policy_j.backward(grad_output, retain_graph=True)
+                    jacobian[i,:,j] = torch.from_numpy(model.extract_grad())
+
+            mean_abs_jacobian = torch.abs(jacobian).mean(2)
+            scaling = torch.sqrt( (mean_abs_jacobian**2).sum(0))
+
+        scaling = scaling.numpy()
+
+        #Avoid divide by zero error 
+        #(intuition: don't change parameter if it doesn't matter)
+        scaling[scaling==0]=1.0
+
+        #Avoid straying too far from first-order approx 
+        #(intuition: don't let scaling factor become too enormous)
+        scaling[scaling<0.01]=0.01
+
+        #rescale perturbation on a per-weight basis
+        delta /= scaling
+
+        #delta should be less if fitness is high
+        #delta *= -np.log((fitness+1)/2)
+        #print("Sum of delta changed from {} to {}".format(sum(delta/np.log((fitness+1)/2)), sum(delta)))
+
+        #generate new perturbation
+        new_params = params+delta
+
+        model.inject_parameters(new_params)
+        old_policy = old_policy.data.numpy()
+
+        #restrict how far any dimension can vary in one mutational step
+        weight_clip = 0.2
+
+        #currently unused: SM-G-*+R (using linesearch to fine-tune)
+        mult = 0.05
+
+        if mutation.count("R")>0:
+            linesearch=True
+            threshold = mag
+        else:
+            linesearch=False
+
+        if linesearch == False:
+            search_rounds = 0
+        else:
+            search_rounds = 15
+
+        def search_error(x,raw=False):
+            final_delta = delta*x
+            final_delta = np.clip(final_delta,-weight_clip,weight_clip)
+            new_params = params + final_delta
+            model.inject_parameters(new_params)
+
+            output = model([verification_states, verification_mask.squeeze(1)]).data.numpy()
+            change = np.sqrt(((output - old_policy)**2).sum(1)).mean()
+
+            if raw:
+                return change
+
+            return (change-threshold)**2
+
+        if linesearch:
+            mult = minimize_scalar(search_error,bounds=(0,0.1,3),tol=(threshold/4)**2,options={'maxiter':search_rounds,'disp':True})
+            if verbose:
+                print ("linesearch result:",mult)
+            chg_amt = mult.x
+        else:
+            #if not doing linesearch
+            #don't change perturbation
+            chg_amt = 1.0
+
+        final_delta = delta*chg_amt
+        if verbose:
+            print ('perturbation max magnitude:',final_delta.max())
+
+        final_delta = np.clip(delta,-weight_clip,weight_clip)
+        new_params = params + final_delta
+
+        if verbose:
+            print ('max post-perturbation weight magnitude:',abs(new_params).max())
+
+        if verbose:
+            print("divergence:", search_error(chg_amt,raw=True))
+
+        diff = np.sqrt(((new_params - params)**2).sum())
+        if verbose:
+            print("mutation size: ", diff)
+
+        return new_params
+    
     def run(self, envs):
+        global state_archive
         for env in envs:
             for _ in range(self.trials):
                 arm = self.pull()
@@ -285,8 +471,12 @@ class Individual:
                 self.info[arm]['value'] += (r-self.info[arm]['value'])/self.info[arm]['no_visited']
                 self.net_rwd += r 
                 self.score += int(arm==env.best_arm)
+                self.matches += 1
+            state_archive.appendleft(random.choice(self.buffer))
             self.reset()
-        self.fitness += self.score/(self.trials*len(envs))
+        self.fitness = self.score/self.matches
+        self.matches = 0
+        self.score = 0
         
         
 
@@ -308,7 +498,7 @@ if (__name__ == "__main__"):
 
 	# In[ ]:
 
-
+	print('Start:', args)
 
 	import random
 	from functools import reduce
@@ -326,7 +516,8 @@ if (__name__ == "__main__"):
 	#Number of samples for each bandit problem
 	trials = int(args.trials)
 
-	greedy_kill=5
+	greedy_kill = 5
+	greedy_select = 5
 
 
 	#setting the enviroment
@@ -347,42 +538,40 @@ if (__name__ == "__main__"):
 	#initilizing population
 	population = []
 	for _ in range(psize):
-	    population.append(Individual(no_arms=no_arms, mag=mag, trials=trials))
-	    population[-1].run(envs)
-	  
+	    population.append(Individual(no_arms=no_arms, mag=mag, trials=trials))  
 	    
 	for gen in range(generations):
 	    
-	    #Getting elite agent
-	    values = [[copy.deepcopy(ind), ind.fitness] for ind in population]
-	    values.sort(key = operator.itemgetter(1))
-	    for x in enumerate(values[-(1+len(elite)):-1]):
-                elite[x[0]] =  x[1][0]
+	    [indv.run(envs) for indv in population]
 	    
-		    
+	    #Getting elite agent        
+	    for i in range(len(elite)):
+                parents = random.sample(population, greedy_select)
+                parent = reduce(lambda x, y: x if x.fitness > y.fitness else y, parents)
+                elite[i] = copy.deepcopy(parent)
+		
 	    rwds.append(np.mean([ind.fitness for ind in population]))
 	    elite_rwds.append(np.mean([ind.fitness for ind in elite]))
-	    '''
 	    print('Generation: ', gen)
 	    print('pop fitness', np.mean([ind.fitness for ind in population]))
 	    print('elite fitness', np.mean([ind.fitness for ind in elite]))
-	    '''
-	    # Finding mean parameters of elite agent
-	    mu = np.mean([ind.model.extract_parameters() for ind in elite], axis=0)
 	    
-	    children = [ind.mutate(mu) for ind in population]
-	    [child.run(envs) for child in children]
+	    
+	    
+	    for parent in elite:
+                for i in range(int(psize/len(elite))):
+                    child = parent.mutate()
+                    child.run(envs)
+                    population.append(child)
+
 	    
 	    #Killing
-	    all_individuals = population + children
-	    for _ in range(psize):
-                to_kill = random.sample(all_individuals, greedy_kill)
+	    for _ in range(int(psize/len(elite))*len(elite)):
+                to_kill = random.sample(population, greedy_kill)
                 to_kill = reduce(lambda x, y: x if x.fitness < y.fitness else y, to_kill)
-                all_individuals.remove(to_kill)
+                population.remove(to_kill)
 		
-	    population = all_individuals
-	    [env.update() for env in envs]
-
+	    [env.reset() for env in envs]
 	  #  print('test fitness', np.mean([ind.fitness for ind in population]))
 	  #  [ind.run(env) for ind in elite]
 	   # print('test_elite fitness', np.mean([ind.fitness for ind in elite]))

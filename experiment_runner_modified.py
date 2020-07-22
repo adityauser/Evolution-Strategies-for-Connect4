@@ -88,7 +88,7 @@ def get_child(population, mutation_mag, evals, greedy_select=5):
 	parents = random.sample(population, greedy_select)
 	parent = reduce(lambda x, y: x if x.fitness > y.fitness else y, parents)
 	child = parent.copy((evals, parent.identity[1]))
-	child.mutate(mutation=args.mutation, mag=mutation_mag, fitness=parent.fitness)
+	child.mutate(mutation=args.mutation, mag=child.mag, fitness=parent.fitness)
 	return child
 
 #evaluation
@@ -137,11 +137,11 @@ if (__name__ == '__main__'):
 
     #grab population size
     psize = int(args.pop_size)
-    '''
+    
     individual_hierarchy = {}
     for i in range(psize):
     	individual_hierarchy[i+1] = []
-    '''
+    
     #number of trials
     trials = 30
 
@@ -162,8 +162,8 @@ if (__name__ == '__main__'):
     for k in range(psize):
 
         threads = []
-        robot = evolution_domain.individual((1, k+1))
-        #individual_hierarchy[k+1].append(robot)
+        robot = evolution_domain.individual((1, k+1), np.random.rand()/10)
+        individual_hierarchy[k+1].append(robot)
         #initialize random parameter vector
         robot.init_rand()
 
@@ -328,7 +328,7 @@ if (__name__ == '__main__'):
         		print('Generation no. {} and Tournament no. {}'.format(evals, tournament_played))
         		future = executor.submit(get_child, population=population, mutation_mag=mutation_mag, evals=evals, greedy_select=greedy_select)
         		child = future.result()
-        		#individual_hierarchy[child.identity[1]].append(child)
+        		individual_hierarchy[child.identity[1]].append(child)
         		future = executor.submit(evaluate, individual=child, test_opponents=all_opponents, push_all=args.state_archive)
         		trial_reward, terminal_state = future.result()
         		if trial_reward/len(all_opponents)<-1:
@@ -460,19 +460,19 @@ if (__name__ == '__main__'):
         file.write(args.message) 
         file.close() 
     plt.show()
-    '''
+    
     for i in range(psize):
     	family_performance = [x.fitness for x in individual_hierarchy[i+1]]
     	plt.plot(range(len(family_performance)), family_performance)
     	plt.ylabel('Fitness of individual')
     	plt.xlabel('Generation Number') 
     	if args.population_play:
-    		plt.savefig('PopulationPlay/'+args.name+'/family_'+str(i+1)+'.svg', format='svg')
+    		plt.savefig('PopulationPlay/'+args.name+'/family_'+str(i+1)+'_mag_'+str(individual_hierarchy[i+1][0].mag)+'.svg', format='svg')
     	else:
-    		plt.savefig('test/'+args.name+'/family_'+str(i+1)+'.svg', format='svg')
+    		plt.savefig('test/'+args.name+'/family_'+str(i+1)+'_mag_'+str(individual_hierarchy[i+1][0].mag)+'.svg', format='svg')
     	plt.close()
-    '''
-    [print(x.fitness, x.identity) for x in population]
+    
+    [print(x.fitness, x.identity, x.mag) for x in population]
     #print(population_fitness)
     print("SOLVED!")
     fname = args.save + "_EVAL%d" % evals

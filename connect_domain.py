@@ -197,7 +197,7 @@ class individual:
     rollout = None
     instances = []
 
-    def __init__(self, identity):
+    def __init__(self, identity, mag):
         self.noise = 0.05
         self.smog = False
         self.id = uuid.uuid4().int
@@ -210,13 +210,14 @@ class individual:
         self.matchs_played = 0
         self.net_reward = 0
         self.identity = identity
+        self.mag = mag
         self.states = collections.deque([], 100)
 
         if self.percolate:
             self.__class__.instances.append(weakref.proxy(self))
 
     def copy(self, identity, percolate=False): 
-        new_ind = individual(identity)
+        new_ind = individual(identity, self.mag)
         new_ind.genome = self.genome.copy()
         new_ind.states = self.states
 
@@ -237,6 +238,11 @@ class individual:
         
         return new_ind
 
+    def mutate_mag(self, perturbation):
+        print('identity: {}, mag: {}'.format(self.identity, self.mag))
+        self.mag *= np.exp(perturbation)
+
+
     def kill(self):
         self.alive=False
         if self.live_descendants <= 0:
@@ -256,16 +262,17 @@ class individual:
 
         #plain mutation is normal ES-style mutation
         if mutation=='regular':
-            self.genome = mutate_plain(self.genome, states=self.states,**kwargs)
+            self.genome = mutate_plain(self.genome, states=self.states, **kwargs)
         elif mutation.count("SM-G")>0:
             #smog_target is target-based smog where we aim to perturb outputs
-            self.genome = mutate_sm_g(
+            self.genome, delta_mag = mutate_sm_g(
                     mutation,
                     self.genome,
                     individual.global_model,
                     individual.env,
                     states=self.states,
                     **kwargs)
+            self.mutate_mag(delta_mag)
             #smog_grad is TRPO-based smog where we attempt to induce limited policy change
         elif mutation.count("SM-R")>0:
                 self.genome = mutate_sm_r(
@@ -619,6 +626,7 @@ def mutate_sm_g(mutation,
 
     #generate normally-distributed perturbation
     delta = np.random.randn(*params.shape).astype(np.float32)*mag
+    delta_mag = np.random.randn()*mag
 
     if second_order:
         print ('SM-G-SO')
@@ -749,7 +757,7 @@ def mutate_sm_g(mutation,
     diff = np.sqrt(((new_params - params)**2).sum())
     print("mutation size: ", diff)
 
-    return new_params
+    return new_params, delta_mag
 
 model = None
 controller_settings = None
