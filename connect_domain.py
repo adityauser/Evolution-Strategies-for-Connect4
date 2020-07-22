@@ -684,6 +684,7 @@ def mutate_sm_g(mutation,
     #rescale perturbation on a per-weight basis
     delta /= scaling
 
+
     #delta should be less if fitness is high
     #delta *= -np.log((fitness+1)/2)
     #print("Sum of delta changed from {} to {}".format(sum(delta/np.log((fitness+1)/2)), sum(delta)))
