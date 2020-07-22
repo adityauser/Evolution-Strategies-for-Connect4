@@ -330,6 +330,6 @@ processes = (
 def run_process(process):                                                             
     os.system('python {}'.format(process))                                       
                                                                                                                                                       
-pool = Pool(processes=320)
+pool = Pool(processes=150)
 pool.map(run_process, processes) 
 
