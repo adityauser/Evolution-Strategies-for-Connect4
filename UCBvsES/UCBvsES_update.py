@@ -128,6 +128,7 @@ from torch.autograd import Variable,grad
 import copy
 import operator
 import collections
+from sklearn.preprocessing import normalize
 
 state_archive = collections.deque([], 100)
 
@@ -256,16 +257,15 @@ class Individual:
             self.info[arm]['value'] = 0
         
     def pull(self):
-        visits = torch.Tensor([np.array([self.info[arm]['no_visited'] for arm in range(self.no_arms)])])
+        visits = torch.Tensor([normalize([np.array([self.info[arm]['no_visited'] for arm in range(self.no_arms)])]).ravel()])
         values = torch.Tensor([np.array([self.info[arm]['value'] for arm in range(self.no_arms)])])
         actions = self.model([visits, values])
         self.buffer.append([visits[0].numpy(), values[0].numpy()])
-
         try:
-            arm = np.random.choice(self.no_arms, 1, p=actions[0].detach().numpy())[0]
+            #arm = np.random.choice(self.no_arms, 1, p=actions[0].detach().numpy())[0]
+            arm  = np.argmax(actions[0].detach().numpy())
         except:
             raise TypeError('actions:', actions)
-        
         self.info[arm]['no_visited'] += 1
         return arm
     
@@ -526,7 +526,7 @@ if (__name__ == "__main__"):
 	envs  = [Enviroment(is_bernoulli=True, no_arms=no_arms) for _ in range(10)]
 
 	#set of elite agent
-	elite = [None]*5
+	elite = [None]*25
 
 	#counter
 	k=0
@@ -554,11 +554,10 @@ if (__name__ == "__main__"):
 		
 	    rwds.append(np.mean([ind.fitness for ind in population]))
 	    elite_rwds.append(np.mean([ind.fitness for ind in elite]))
-	    '''
-	    print('Generation: ', gen)
-	    print('pop fitness', np.mean([ind.fitness for ind in population]))
-	    print('elite fitness', np.mean([ind.fitness for ind in elite]))
-	    '''
+	    if gen%50==0:
+	        print('Generation: ', gen)
+	        print('pop fitness', np.mean([ind.fitness for ind in population]))
+	        print('elite fitness', np.mean([ind.fitness for ind in elite]))
 	    
 	    
 	    
