@@ -1,13 +1,12 @@
 #!/bin/sh
 #SBATCH -N 1
-#SBATCH --ntasks-per-node=40
-#SBATCH --job-name="ds"
+#SBATCH --ntasks-per-node=100
+#SBATCH --job-name=""
 #SBATCH --error=job.%J.err
 #SBATCH --output=job.%J.out
-#SBATCH --partition=gpu
-#SBATCH --gres=gpu:2
+#SBATCH --partition=cpu
 
 
-source activate env
+
 module load cuda/10.1
-python main.py 
+python run_parallel.py 
