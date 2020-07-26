@@ -650,7 +650,7 @@ if (__name__ == "__main__"):
                 indv.fitness = 0
                 indv.run([env])
                 test_rwd += indv.fitness
-	    test_pop.append(round(test_rwd/50, 3))
+	    test_pop.append(round(test_rwd/psize, 3))
 	    
 	    test_rwd = 0
 	    for indv in elite:
@@ -659,7 +659,7 @@ if (__name__ == "__main__"):
                 indv.fitness = 0
                 indv.run([env])
                 test_rwd += indv.fitness
-	    test_elite.append(round(test_rwd/50, 3))
+	    test_elite.append(round(test_rwd/psize, 3))
 	    
 	    test_rwd = 0
 	    for _ in range(trials):    
@@ -668,7 +668,7 @@ if (__name__ == "__main__"):
                 test_rwd += int(env.best_arm==arm)
                 ucb.update(arm, r)
 	    ucb.reset()
-	    test_ucb.append(round(test_rwd/50, 3))
+	    test_ucb.append(round(test_rwd/psize, 3))
 
 	    
 
