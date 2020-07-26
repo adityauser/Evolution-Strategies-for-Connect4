@@ -50,6 +50,6 @@ processes = (
 def run_process(process):                                                             
     os.system('python {}'.format(process))                                       
                                                                                                                                                       
-pool = Pool(processes=50)
+pool = Pool(processes=40)
 pool.map(run_process, processes) 
 
