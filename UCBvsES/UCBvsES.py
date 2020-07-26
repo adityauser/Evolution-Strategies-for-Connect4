@@ -554,7 +554,7 @@ if (__name__ == "__main__"):
 		
 	    rwds.append(np.mean([ind.fitness for ind in population]))
 	    elite_rwds.append(np.mean([ind.fitness for ind in elite]))
-            if gen%50==0:
+	    if gen%50==0:
 	        print('Generation: ', gen)
 	        print('pop fitness', np.mean([ind.fitness for ind in population]))
 	        print('elite fitness', np.mean([ind.fitness for ind in elite]))
