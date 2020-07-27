@@ -668,7 +668,7 @@ if (__name__ == "__main__"):
                 test_rwd += int(env.best_arm==arm)
                 ucb.update(arm, r)
 	    ucb.reset()
-	    test_ucb.append(round(test_rwd/psize, 3))
+	    test_ucb.append(round(test_rwd/trials, 3))
 
 	    
 
