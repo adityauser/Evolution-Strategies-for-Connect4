@@ -262,8 +262,8 @@ class Individual:
         actions = self.model([visits, values])
         self.buffer.append([visits[0].numpy(), values[0].numpy()])
         try:
-            #arm = np.random.choice(self.no_arms, 1, p=actions[0].detach().numpy())[0]
-            arm  = np.argmax(actions[0].detach().numpy())
+            arm = np.random.choice(self.no_arms, 1, p=actions[0].detach().numpy())[0]
+            #arm  = np.argmax(actions[0].detach().numpy())
         except:
             raise TypeError('actions:', actions)
         self.info[arm]['no_visited'] += 1
