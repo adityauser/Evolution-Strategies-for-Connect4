@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 
 import os
 import argparse
+import logging
+
 
 
 parser = argparse.ArgumentParser()
@@ -32,11 +34,15 @@ parser.add_argument("--arms",help="total number of arms",default='10')
 args = parser.parse_args()
 
 
+
 if args.save_result:
     try:
         os.makedirs('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name)
     except:
         pass
+
+LOG_FILENAME = 'results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name + 'UCBvsES.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
 
 class Enviroment:
@@ -505,6 +511,9 @@ if (__name__ == "__main__"):
 	import random
 	from functools import reduce
 
+	logging.info('run_master: {}'.format(args))
+        
+
 
 	# population size
 	psize = int(args.pop_size)
@@ -554,6 +563,9 @@ if (__name__ == "__main__"):
 		
 	    rwds.append(np.mean([ind.fitness for ind in population]))
 	    elite_rwds.append(np.mean([ind.fitness for ind in elite]))
+	    logging.info('Generation: {}'.format(gen))
+	    logging.info('pop fitness: {}'.format(np.mean([ind.fitness for ind in population])))
+	    logging.info('elite fitness: {}'.format(np.mean([ind.fitness for ind in elite])))
 	    if gen%50==0:
 	        print('Generation: ', gen)
 	        print('pop fitness', np.mean([ind.fitness for ind in population]))
