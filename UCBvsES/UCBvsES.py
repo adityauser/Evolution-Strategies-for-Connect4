@@ -41,7 +41,7 @@ if args.save_result:
     except:
         pass
 
-LOG_FILENAME = 'results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name + 'UCBvsES.log'
+LOG_FILENAME = 'results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name + '/UCBvsES.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
 
