@@ -46,27 +46,51 @@ logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
 
 class Enviroment:
-    def __init__(self, is_bernoulli, no_arms=10):
+    def __init__(self, is_bernoulli, no_arms=10, N=100):
         self.no_arms = no_arms
         
-        self.pull_arm = self.pull_arm_bernaulli if is_bernoulli else self.pull_arm_gaussion
-            
-        self.arms = {}
-        for arm in range(self.no_arms):
-            self.arms[arm] = np.random.rand()
+        self.N = N
         
-        self.best_arm = np.argmax([[self.arms[arm] for arm in range(self.no_arms)]])
+        self.pull_arm = self.pull_arm_bernaulli if is_bernoulli else self.pull_arm_gaussion
+        self.round = 0
+        
+        self.theta2 = np.random.rand(no_arms)
+            
+        self.arms_prob = {}
+        for arm in range(self.no_arms):
+            self.arms_prob[arm] = np.random.rand()
+            
+        self.arms_grad = {}
+        for arm in range(self.no_arms):
+            self.arms_grad[arm] = (np.random.rand() - self.arms_prob[arm])/self.N
+        
+        self.best_arm = np.argmax([[self.arms_prob[arm] for arm in range(self.no_arms)]])
         
     def reset(self):
+        self.round = 0
         for arm in range(self.no_arms):
-            self.arms[arm] = np.random.rand()
-        self.best_arm = np.argmax([[self.arms[arm] for arm in range(self.no_arms)]])
+            self.arms_prob[arm] = np.random.rand()
+        for arm in range(self.no_arms):
+            self.arms_grad[arm] = (np.random.rand() - self.arms_prob[arm])/self.N
+        self.best_arm = np.argmax([[self.arms_prob[arm] for arm in range(self.no_arms)]])
+     
+    def linear_change(self):  
+        if not self.round > self.N:
+            for arm in range(self.no_arms):
+                self.arms_prob[arm] += self.arms_grad[arm]
+        else:
+            raise TypeError("Enviroment has reached to maximum pulls, reset the enviroment.")
+        
+        self.best_arm = np.argmax([[self.arms_prob[arm] for arm in range(self.no_arms)]])
+    
         
     def pull_arm_bernaulli(self, arm):
-        return 1 if self.arms[arm] > np.random.rand() else 0
+        #self.round += 1
+        #self.linear_change()
+        return 1 if self.arms_prob[arm] > np.random.rand() else 0
     
     def pull_arm_gaussion(self, arm):
-        return np.random.normal(self.arms[arm], scale=0.1)
+        return np.random.normal(self.arms_prob[arm], scale=0.1)
     
         
 
@@ -482,6 +506,7 @@ class Individual:
                 self.matches += 1
             state_archive.appendleft(random.choice(self.buffer))
             self.reset()
+            env.reset()
         self.fitness = self.score/self.matches
         self.matches = 0
         self.score = 0
