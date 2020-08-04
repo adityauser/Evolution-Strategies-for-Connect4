@@ -1,0 +1,1202 @@
+INFO:root:run_master: Namespace(arms='10', hidden='128', layers='3', max_gen='200', message='', mutation_mag='0.1', name='nonStationary_v1', noise=True, pop_size='50', save_result=True, trials='100')
+INFO:root:run_master: Namespace(arms='10', hidden='128', layers='3', max_gen='200', message='', mutation_mag='0.1', name='nonStationary_v1', noise=False, pop_size='50', save_result=True, trials='100')
+INFO:root:Generation: 0
+INFO:root:pop fitness: 0.09934
+INFO:root:elite fitness: 0.10724
+INFO:root:Generation: 0
+INFO:root:pop fitness: 0.0998
+INFO:root:elite fitness: 0.10916000000000001
+INFO:root:Generation: 1
+INFO:root:pop fitness: 0.0984
+INFO:root:elite fitness: 0.14228
+INFO:root:Generation: 1
+INFO:root:pop fitness: 0.10677999999999999
+INFO:root:elite fitness: 0.15228000000000003
+INFO:root:Generation: 2
+INFO:root:pop fitness: 0.09408
+INFO:root:elite fitness: 0.14656
+INFO:root:Generation: 2
+INFO:root:pop fitness: 0.1014
+INFO:root:elite fitness: 0.18503999999999998
+INFO:root:Generation: 3
+INFO:root:pop fitness: 0.08954
+INFO:root:elite fitness: 0.15843999999999997
+INFO:root:Generation: 3
+INFO:root:pop fitness: 0.10286
+INFO:root:elite fitness: 0.17868000000000003
+INFO:root:Generation: 4
+INFO:root:pop fitness: 0.08744000000000002
+INFO:root:elite fitness: 0.16391999999999998
+INFO:root:Generation: 4
+INFO:root:pop fitness: 0.11063999999999999
+INFO:root:elite fitness: 0.18975999999999998
+INFO:root:Generation: 5
+INFO:root:pop fitness: 0.11548
+INFO:root:elite fitness: 0.19016
+INFO:root:Generation: 5
+INFO:root:pop fitness: 0.10645999999999999
+INFO:root:elite fitness: 0.18796
+INFO:root:Generation: 6
+INFO:root:pop fitness: 0.09866000000000001
+INFO:root:elite fitness: 0.19932000000000002
+INFO:root:Generation: 6
+INFO:root:pop fitness: 0.11616
+INFO:root:elite fitness: 0.19399999999999998
+INFO:root:Generation: 7
+INFO:root:pop fitness: 0.09792000000000002
+INFO:root:elite fitness: 0.18984
+INFO:root:Generation: 7
+INFO:root:pop fitness: 0.10389999999999999
+INFO:root:elite fitness: 0.18947999999999998
+INFO:root:Generation: 8
+INFO:root:pop fitness: 0.11094
+INFO:root:elite fitness: 0.22395999999999996
+INFO:root:Generation: 8
+INFO:root:pop fitness: 0.0911
+INFO:root:elite fitness: 0.17143999999999998
+INFO:root:Generation: 9
+INFO:root:pop fitness: 0.12304
+INFO:root:elite fitness: 0.23104000000000002
+INFO:root:Generation: 9
+INFO:root:pop fitness: 0.09673999999999999
+INFO:root:elite fitness: 0.20936
+INFO:root:Generation: 10
+INFO:root:pop fitness: 0.12588000000000002
+INFO:root:elite fitness: 0.21584
+INFO:root:Generation: 10
+INFO:root:pop fitness: 0.10010000000000002
+INFO:root:elite fitness: 0.1886
+INFO:root:Generation: 11
+INFO:root:pop fitness: 0.09236000000000001
+INFO:root:elite fitness: 0.15696
+INFO:root:Generation: 11
+INFO:root:pop fitness: 0.10400000000000001
+INFO:root:elite fitness: 0.18452
+INFO:root:Generation: 12
+INFO:root:pop fitness: 0.09624
+INFO:root:elite fitness: 0.17187999999999995
+INFO:root:Generation: 12
+INFO:root:pop fitness: 0.10812
+INFO:root:elite fitness: 0.18688
+INFO:root:Generation: 13
+INFO:root:pop fitness: 0.09423999999999999
+INFO:root:elite fitness: 0.1804
+INFO:root:Generation: 13
+INFO:root:pop fitness: 0.09504000000000001
+INFO:root:elite fitness: 0.17352
+INFO:root:Generation: 14
+INFO:root:pop fitness: 0.10484
+INFO:root:elite fitness: 0.19288
+INFO:root:Generation: 14
+INFO:root:pop fitness: 0.10375999999999999
+INFO:root:elite fitness: 0.18388
+INFO:root:Generation: 15
+INFO:root:pop fitness: 0.11328
+INFO:root:elite fitness: 0.18208000000000002
+INFO:root:Generation: 15
+INFO:root:pop fitness: 0.09244
+INFO:root:elite fitness: 0.18175999999999998
+INFO:root:Generation: 16
+INFO:root:pop fitness: 0.10764
+INFO:root:elite fitness: 0.18384
+INFO:root:Generation: 16
+INFO:root:pop fitness: 0.11060000000000002
+INFO:root:elite fitness: 0.23064000000000004
+INFO:root:Generation: 17
+INFO:root:pop fitness: 0.10476
+INFO:root:elite fitness: 0.19916
+INFO:root:Generation: 17
+INFO:root:pop fitness: 0.10755999999999999
+INFO:root:elite fitness: 0.20968
+INFO:root:Generation: 18
+INFO:root:pop fitness: 0.10407999999999999
+INFO:root:elite fitness: 0.17584
+INFO:root:Generation: 18
+INFO:root:pop fitness: 0.12682000000000002
+INFO:root:elite fitness: 0.21652000000000002
+INFO:root:Generation: 19
+INFO:root:pop fitness: 0.09814
+INFO:root:elite fitness: 0.19876000000000002
+INFO:root:Generation: 19
+INFO:root:pop fitness: 0.11402000000000001
+INFO:root:elite fitness: 0.23224
+INFO:root:Generation: 20
+INFO:root:pop fitness: 0.09952
+INFO:root:elite fitness: 0.17495999999999998
+INFO:root:Generation: 20
+INFO:root:pop fitness: 0.11372
+INFO:root:elite fitness: 0.21192000000000003
+INFO:root:Generation: 21
+INFO:root:pop fitness: 0.09847999999999998
+INFO:root:elite fitness: 0.18871999999999997
+INFO:root:Generation: 21
+INFO:root:pop fitness: 0.13056
+INFO:root:elite fitness: 0.23204
+INFO:root:Generation: 22
+INFO:root:pop fitness: 0.0818
+INFO:root:elite fitness: 0.14559999999999998
+INFO:root:Generation: 23
+INFO:root:pop fitness: 0.11648
+INFO:root:elite fitness: 0.19144000000000003
+INFO:root:Generation: 22
+INFO:root:pop fitness: 0.09561999999999998
+INFO:root:elite fitness: 0.17604
+INFO:root:Generation: 24
+INFO:root:pop fitness: 0.10418
+INFO:root:elite fitness: 0.18424
+INFO:root:Generation: 23
+INFO:root:pop fitness: 0.1125
+INFO:root:elite fitness: 0.18939999999999999
+INFO:root:Generation: 25
+INFO:root:pop fitness: 0.09906000000000002
+INFO:root:elite fitness: 0.18520000000000003
+INFO:root:Generation: 24
+INFO:root:pop fitness: 0.12144000000000002
+INFO:root:elite fitness: 0.21404
+INFO:root:Generation: 26
+INFO:root:pop fitness: 0.13174000000000002
+INFO:root:elite fitness: 0.22987999999999997
+INFO:root:Generation: 25
+INFO:root:pop fitness: 0.11326
+INFO:root:elite fitness: 0.18303999999999998
+INFO:root:Generation: 27
+INFO:root:pop fitness: 0.12358000000000001
+INFO:root:elite fitness: 0.234
+INFO:root:Generation: 26
+INFO:root:pop fitness: 0.10565999999999999
+INFO:root:elite fitness: 0.19448000000000001
+INFO:root:Generation: 28
+INFO:root:pop fitness: 0.10006
+INFO:root:elite fitness: 0.18284
+INFO:root:Generation: 27
+INFO:root:pop fitness: 0.1193
+INFO:root:elite fitness: 0.18268
+INFO:root:Generation: 29
+INFO:root:pop fitness: 0.11205999999999999
+INFO:root:elite fitness: 0.20768
+INFO:root:Generation: 28
+INFO:root:pop fitness: 0.11926
+INFO:root:elite fitness: 0.21419999999999997
+INFO:root:Generation: 30
+INFO:root:pop fitness: 0.11023999999999999
+INFO:root:elite fitness: 0.21991999999999998
+INFO:root:Generation: 29
+INFO:root:pop fitness: 0.08782
+INFO:root:elite fitness: 0.1542
+INFO:root:Generation: 31
+INFO:root:pop fitness: 0.10356
+INFO:root:elite fitness: 0.18035999999999996
+INFO:root:Generation: 30
+INFO:root:pop fitness: 0.11359999999999998
+INFO:root:elite fitness: 0.18928
+INFO:root:Generation: 32
+INFO:root:pop fitness: 0.09572000000000001
+INFO:root:elite fitness: 0.18428
+INFO:root:Generation: 31
+INFO:root:pop fitness: 0.11932000000000001
+INFO:root:elite fitness: 0.22716
+INFO:root:Generation: 33
+INFO:root:pop fitness: 0.10474000000000001
+INFO:root:elite fitness: 0.17995999999999998
+INFO:root:Generation: 32
+INFO:root:pop fitness: 0.12024000000000001
+INFO:root:elite fitness: 0.19948
+INFO:root:Generation: 34
+INFO:root:pop fitness: 0.11350000000000003
+INFO:root:elite fitness: 0.19531999999999997
+INFO:root:Generation: 33
+INFO:root:pop fitness: 0.10596
+INFO:root:elite fitness: 0.19204000000000002
+INFO:root:Generation: 35
+INFO:root:pop fitness: 0.10265999999999999
+INFO:root:elite fitness: 0.1684
+INFO:root:Generation: 34
+INFO:root:pop fitness: 0.12152000000000002
+INFO:root:elite fitness: 0.19232
+INFO:root:Generation: 36
+INFO:root:pop fitness: 0.10138000000000001
+INFO:root:elite fitness: 0.19864
+INFO:root:Generation: 35
+INFO:root:pop fitness: 0.13319999999999999
+INFO:root:elite fitness: 0.21752
+INFO:root:Generation: 37
+INFO:root:pop fitness: 0.11990000000000002
+INFO:root:elite fitness: 0.21979999999999997
+INFO:root:Generation: 36
+INFO:root:pop fitness: 0.11176000000000003
+INFO:root:elite fitness: 0.19536
+INFO:root:Generation: 38
+INFO:root:pop fitness: 0.1035
+INFO:root:elite fitness: 0.19768
+INFO:root:Generation: 37
+INFO:root:pop fitness: 0.12154
+INFO:root:elite fitness: 0.23484000000000002
+INFO:root:Generation: 39
+INFO:root:pop fitness: 0.10488
+INFO:root:elite fitness: 0.18672000000000005
+INFO:root:Generation: 38
+INFO:root:pop fitness: 0.0975
+INFO:root:elite fitness: 0.16875999999999997
+INFO:root:Generation: 40
+INFO:root:pop fitness: 0.09780000000000001
+INFO:root:elite fitness: 0.1702
+INFO:root:Generation: 39
+INFO:root:pop fitness: 0.11042
+INFO:root:elite fitness: 0.19104
+INFO:root:Generation: 41
+INFO:root:pop fitness: 0.12403999999999998
+INFO:root:elite fitness: 0.21788
+INFO:root:Generation: 40
+INFO:root:pop fitness: 0.11180000000000001
+INFO:root:elite fitness: 0.19488
+INFO:root:Generation: 42
+INFO:root:pop fitness: 0.11290000000000001
+INFO:root:elite fitness: 0.18632
+INFO:root:Generation: 41
+INFO:root:pop fitness: 0.11306
+INFO:root:elite fitness: 0.21096
+INFO:root:Generation: 43
+INFO:root:pop fitness: 0.12661999999999998
+INFO:root:elite fitness: 0.22155999999999998
+INFO:root:Generation: 42
+INFO:root:pop fitness: 0.09708000000000001
+INFO:root:elite fitness: 0.16815999999999998
+INFO:root:Generation: 44
+INFO:root:pop fitness: 0.10154000000000002
+INFO:root:elite fitness: 0.18280000000000002
+INFO:root:Generation: 43
+INFO:root:pop fitness: 0.11669999999999998
+INFO:root:elite fitness: 0.21976000000000004
+INFO:root:Generation: 45
+INFO:root:pop fitness: 0.11012000000000002
+INFO:root:elite fitness: 0.23007999999999998
+INFO:root:Generation: 44
+INFO:root:pop fitness: 0.10221999999999998
+INFO:root:elite fitness: 0.20435999999999999
+INFO:root:Generation: 46
+INFO:root:pop fitness: 0.07892
+INFO:root:elite fitness: 0.14816000000000001
+INFO:root:Generation: 47
+INFO:root:pop fitness: 0.10444
+INFO:root:elite fitness: 0.19532
+INFO:root:Generation: 45
+INFO:root:pop fitness: 0.10454000000000001
+INFO:root:elite fitness: 0.18816000000000002
+INFO:root:Generation: 48
+INFO:root:pop fitness: 0.10953999999999998
+INFO:root:elite fitness: 0.19816000000000003
+INFO:root:Generation: 46
+INFO:root:pop fitness: 0.10976000000000001
+INFO:root:elite fitness: 0.22512000000000001
+INFO:root:Generation: 49
+INFO:root:pop fitness: 0.10490000000000001
+INFO:root:elite fitness: 0.17555999999999997
+INFO:root:Generation: 47
+INFO:root:pop fitness: 0.0898
+INFO:root:elite fitness: 0.1758
+INFO:root:Generation: 50
+INFO:root:pop fitness: 0.11242
+INFO:root:elite fitness: 0.19171999999999997
+INFO:root:Generation: 48
+INFO:root:pop fitness: 0.12000000000000002
+INFO:root:elite fitness: 0.19672
+INFO:root:Generation: 51
+INFO:root:pop fitness: 0.13150000000000003
+INFO:root:elite fitness: 0.24172000000000002
+INFO:root:Generation: 49
+INFO:root:pop fitness: 0.10474
+INFO:root:elite fitness: 0.17976
+INFO:root:Generation: 52
+INFO:root:pop fitness: 0.09872
+INFO:root:elite fitness: 0.18272
+INFO:root:Generation: 50
+INFO:root:pop fitness: 0.09876
+INFO:root:elite fitness: 0.15672
+INFO:root:Generation: 53
+INFO:root:pop fitness: 0.10398
+INFO:root:elite fitness: 0.17792000000000002
+INFO:root:Generation: 51
+INFO:root:pop fitness: 0.10309999999999998
+INFO:root:elite fitness: 0.20732
+INFO:root:Generation: 54
+INFO:root:pop fitness: 0.11164
+INFO:root:elite fitness: 0.21140000000000003
+INFO:root:Generation: 52
+INFO:root:pop fitness: 0.10458
+INFO:root:elite fitness: 0.21148
+INFO:root:Generation: 55
+INFO:root:pop fitness: 0.12856
+INFO:root:elite fitness: 0.21988000000000002
+INFO:root:Generation: 53
+INFO:root:pop fitness: 0.12830000000000003
+INFO:root:elite fitness: 0.23828
+INFO:root:Generation: 56
+INFO:root:pop fitness: 0.11737999999999998
+INFO:root:elite fitness: 0.22468
+INFO:root:Generation: 54
+INFO:root:pop fitness: 0.12104000000000001
+INFO:root:elite fitness: 0.21408000000000002
+INFO:root:Generation: 57
+INFO:root:pop fitness: 0.13324000000000003
+INFO:root:elite fitness: 0.22552
+INFO:root:Generation: 55
+INFO:root:pop fitness: 0.11092
+INFO:root:elite fitness: 0.22476
+INFO:root:Generation: 58
+INFO:root:pop fitness: 0.11718
+INFO:root:elite fitness: 0.205
+INFO:root:Generation: 56
+INFO:root:pop fitness: 0.11578
+INFO:root:elite fitness: 0.19763999999999998
+INFO:root:Generation: 59
+INFO:root:pop fitness: 0.13074000000000002
+INFO:root:elite fitness: 0.23183999999999996
+INFO:root:Generation: 57
+INFO:root:pop fitness: 0.1418
+INFO:root:elite fitness: 0.23564
+INFO:root:Generation: 60
+INFO:root:pop fitness: 0.13398
+INFO:root:elite fitness: 0.23276000000000002
+INFO:root:Generation: 58
+INFO:root:pop fitness: 0.11544
+INFO:root:elite fitness: 0.22984
+INFO:root:Generation: 61
+INFO:root:pop fitness: 0.13112000000000001
+INFO:root:elite fitness: 0.27616
+INFO:root:Generation: 59
+INFO:root:pop fitness: 0.11194000000000001
+INFO:root:elite fitness: 0.20620000000000002
+INFO:root:Generation: 62
+INFO:root:pop fitness: 0.13018
+INFO:root:elite fitness: 0.20404
+INFO:root:Generation: 60
+INFO:root:pop fitness: 0.1121
+INFO:root:elite fitness: 0.20896
+INFO:root:Generation: 63
+INFO:root:pop fitness: 0.128
+INFO:root:elite fitness: 0.2216
+INFO:root:Generation: 61
+INFO:root:pop fitness: 0.12362000000000001
+INFO:root:elite fitness: 0.21496
+INFO:root:Generation: 64
+INFO:root:pop fitness: 0.13126000000000002
+INFO:root:elite fitness: 0.22332000000000002
+INFO:root:Generation: 62
+INFO:root:pop fitness: 0.11395999999999999
+INFO:root:elite fitness: 0.21396000000000004
+INFO:root:Generation: 65
+INFO:root:pop fitness: 0.13248000000000001
+INFO:root:elite fitness: 0.22328
+INFO:root:Generation: 63
+INFO:root:pop fitness: 0.10478000000000001
+INFO:root:elite fitness: 0.19412000000000001
+INFO:root:Generation: 66
+INFO:root:pop fitness: 0.11122
+INFO:root:elite fitness: 0.20284000000000002
+INFO:root:Generation: 64
+INFO:root:pop fitness: 0.12468
+INFO:root:elite fitness: 0.214
+INFO:root:Generation: 67
+INFO:root:pop fitness: 0.10446
+INFO:root:elite fitness: 0.2058
+INFO:root:Generation: 65
+INFO:root:pop fitness: 0.11776
+INFO:root:elite fitness: 0.19267999999999996
+INFO:root:Generation: 68
+INFO:root:pop fitness: 0.11815999999999999
+INFO:root:elite fitness: 0.22851999999999997
+INFO:root:Generation: 66
+INFO:root:pop fitness: 0.11282
+INFO:root:elite fitness: 0.18588000000000002
+INFO:root:Generation: 69
+INFO:root:pop fitness: 0.12344
+INFO:root:elite fitness: 0.20192000000000004
+INFO:root:Generation: 67
+INFO:root:pop fitness: 0.13183999999999998
+INFO:root:elite fitness: 0.22252000000000002
+INFO:root:Generation: 70
+INFO:root:pop fitness: 0.12044
+INFO:root:elite fitness: 0.19132
+INFO:root:Generation: 68
+INFO:root:pop fitness: 0.11468
+INFO:root:elite fitness: 0.1918
+INFO:root:Generation: 71
+INFO:root:pop fitness: 0.10583999999999999
+INFO:root:elite fitness: 0.20855999999999997
+INFO:root:Generation: 72
+INFO:root:pop fitness: 0.10637999999999997
+INFO:root:elite fitness: 0.18247999999999998
+INFO:root:Generation: 69
+INFO:root:pop fitness: 0.12158000000000001
+INFO:root:elite fitness: 0.21404000000000004
+INFO:root:Generation: 73
+INFO:root:pop fitness: 0.14012
+INFO:root:elite fitness: 0.25196
+INFO:root:Generation: 70
+INFO:root:pop fitness: 0.14326
+INFO:root:elite fitness: 0.22763999999999998
+INFO:root:Generation: 74
+INFO:root:pop fitness: 0.12105999999999999
+INFO:root:elite fitness: 0.22024000000000002
+INFO:root:Generation: 71
+INFO:root:pop fitness: 0.11124
+INFO:root:elite fitness: 0.20980000000000001
+INFO:root:Generation: 75
+INFO:root:pop fitness: 0.13262000000000002
+INFO:root:elite fitness: 0.21040000000000003
+INFO:root:Generation: 72
+INFO:root:pop fitness: 0.12961999999999999
+INFO:root:elite fitness: 0.19264
+INFO:root:Generation: 76
+INFO:root:pop fitness: 0.10706000000000002
+INFO:root:elite fitness: 0.17292000000000002
+INFO:root:Generation: 73
+INFO:root:pop fitness: 0.12312
+INFO:root:elite fitness: 0.2498
+INFO:root:Generation: 77
+INFO:root:pop fitness: 0.1131
+INFO:root:elite fitness: 0.19824000000000003
+INFO:root:Generation: 78
+INFO:root:pop fitness: 0.1185
+INFO:root:elite fitness: 0.20236
+INFO:root:Generation: 74
+INFO:root:pop fitness: 0.12024000000000003
+INFO:root:elite fitness: 0.21751999999999996
+INFO:root:Generation: 79
+INFO:root:pop fitness: 0.11864000000000001
+INFO:root:elite fitness: 0.22088000000000002
+INFO:root:Generation: 75
+INFO:root:pop fitness: 0.13008
+INFO:root:elite fitness: 0.1998
+INFO:root:Generation: 76
+INFO:root:pop fitness: 0.14152
+INFO:root:elite fitness: 0.276
+INFO:root:Generation: 80
+INFO:root:pop fitness: 0.10662000000000002
+INFO:root:elite fitness: 0.1784
+INFO:root:Generation: 77
+INFO:root:pop fitness: 0.10604000000000001
+INFO:root:elite fitness: 0.18428
+INFO:root:Generation: 81
+INFO:root:pop fitness: 0.12123999999999999
+INFO:root:elite fitness: 0.1948
+INFO:root:Generation: 78
+INFO:root:pop fitness: 0.12129999999999999
+INFO:root:elite fitness: 0.21072
+INFO:root:Generation: 82
+INFO:root:pop fitness: 0.11588000000000001
+INFO:root:elite fitness: 0.18944
+INFO:root:Generation: 79
+INFO:root:pop fitness: 0.11678000000000001
+INFO:root:elite fitness: 0.19532
+INFO:root:Generation: 83
+INFO:root:pop fitness: 0.1074
+INFO:root:elite fitness: 0.22188
+INFO:root:Generation: 80
+INFO:root:pop fitness: 0.12728
+INFO:root:elite fitness: 0.23507999999999998
+INFO:root:Generation: 84
+INFO:root:pop fitness: 0.11168000000000002
+INFO:root:elite fitness: 0.19088000000000002
+INFO:root:Generation: 85
+INFO:root:pop fitness: 0.09881999999999999
+INFO:root:elite fitness: 0.1766
+INFO:root:Generation: 81
+INFO:root:pop fitness: 0.1459
+INFO:root:elite fitness: 0.28424
+INFO:root:Generation: 86
+INFO:root:pop fitness: 0.11366
+INFO:root:elite fitness: 0.18739999999999998
+INFO:root:Generation: 82
+INFO:root:pop fitness: 0.13006
+INFO:root:elite fitness: 0.23007999999999998
+INFO:root:Generation: 87
+INFO:root:pop fitness: 0.09816000000000003
+INFO:root:elite fitness: 0.17787999999999995
+INFO:root:Generation: 83
+INFO:root:pop fitness: 0.1023
+INFO:root:elite fitness: 0.20752000000000004
+INFO:root:Generation: 88
+INFO:root:pop fitness: 0.10323999999999998
+INFO:root:elite fitness: 0.18396
+INFO:root:Generation: 84
+INFO:root:pop fitness: 0.11126
+INFO:root:elite fitness: 0.21772000000000002
+INFO:root:Generation: 89
+INFO:root:pop fitness: 0.10979999999999998
+INFO:root:elite fitness: 0.19744000000000003
+INFO:root:Generation: 85
+INFO:root:pop fitness: 0.12443999999999997
+INFO:root:elite fitness: 0.23864000000000002
+INFO:root:Generation: 90
+INFO:root:pop fitness: 0.11798
+INFO:root:elite fitness: 0.21972000000000003
+INFO:root:Generation: 86
+INFO:root:pop fitness: 0.10595999999999998
+INFO:root:elite fitness: 0.17464000000000002
+INFO:root:Generation: 91
+INFO:root:pop fitness: 0.10792
+INFO:root:elite fitness: 0.20932000000000003
+INFO:root:Generation: 87
+INFO:root:pop fitness: 0.10166
+INFO:root:elite fitness: 0.218
+INFO:root:Generation: 92
+INFO:root:pop fitness: 0.09457999999999998
+INFO:root:elite fitness: 0.16264
+INFO:root:Generation: 88
+INFO:root:pop fitness: 0.1108
+INFO:root:elite fitness: 0.21672
+INFO:root:Generation: 93
+INFO:root:pop fitness: 0.10606
+INFO:root:elite fitness: 0.17952
+INFO:root:Generation: 89
+INFO:root:pop fitness: 0.12245999999999999
+INFO:root:elite fitness: 0.23652
+INFO:root:Generation: 94
+INFO:root:pop fitness: 0.11943999999999999
+INFO:root:elite fitness: 0.21388
+INFO:root:Generation: 90
+INFO:root:pop fitness: 0.11023999999999999
+INFO:root:elite fitness: 0.21596
+INFO:root:Generation: 95
+INFO:root:pop fitness: 0.1119
+INFO:root:elite fitness: 0.21663999999999997
+INFO:root:Generation: 91
+INFO:root:pop fitness: 0.12908
+INFO:root:elite fitness: 0.2168
+INFO:root:Generation: 96
+INFO:root:pop fitness: 0.10366
+INFO:root:elite fitness: 0.20839999999999997
+INFO:root:Generation: 92
+INFO:root:pop fitness: 0.10614000000000001
+INFO:root:elite fitness: 0.1916
+INFO:root:Generation: 97
+INFO:root:pop fitness: 0.11214
+INFO:root:elite fitness: 0.18952000000000002
+INFO:root:Generation: 93
+INFO:root:pop fitness: 0.1133
+INFO:root:elite fitness: 0.18212
+INFO:root:Generation: 98
+INFO:root:pop fitness: 0.12862
+INFO:root:elite fitness: 0.23147999999999996
+INFO:root:Generation: 94
+INFO:root:pop fitness: 0.11836000000000002
+INFO:root:elite fitness: 0.20492000000000002
+INFO:root:Generation: 99
+INFO:root:pop fitness: 0.10640000000000001
+INFO:root:elite fitness: 0.19556
+INFO:root:Generation: 95
+INFO:root:pop fitness: 0.11704
+INFO:root:elite fitness: 0.20743999999999999
+INFO:root:Generation: 100
+INFO:root:pop fitness: 0.10638
+INFO:root:elite fitness: 0.21352000000000002
+INFO:root:Generation: 96
+INFO:root:pop fitness: 0.11474000000000001
+INFO:root:elite fitness: 0.20779999999999998
+INFO:root:Generation: 101
+INFO:root:pop fitness: 0.11728
+INFO:root:elite fitness: 0.20672000000000001
+INFO:root:Generation: 97
+INFO:root:pop fitness: 0.13319999999999999
+INFO:root:elite fitness: 0.20915999999999996
+INFO:root:Generation: 102
+INFO:root:pop fitness: 0.11173999999999999
+INFO:root:elite fitness: 0.21020000000000003
+INFO:root:Generation: 98
+INFO:root:pop fitness: 0.12390000000000001
+INFO:root:elite fitness: 0.23236
+INFO:root:Generation: 103
+INFO:root:pop fitness: 0.11312000000000001
+INFO:root:elite fitness: 0.18524000000000002
+INFO:root:Generation: 99
+INFO:root:pop fitness: 0.1268
+INFO:root:elite fitness: 0.21863999999999997
+INFO:root:Generation: 104
+INFO:root:pop fitness: 0.11062
+INFO:root:elite fitness: 0.17972
+INFO:root:Generation: 100
+INFO:root:pop fitness: 0.13236
+INFO:root:elite fitness: 0.24495999999999998
+INFO:root:Generation: 105
+INFO:root:pop fitness: 0.09452000000000002
+INFO:root:elite fitness: 0.20728000000000002
+INFO:root:Generation: 101
+INFO:root:pop fitness: 0.13778
+INFO:root:elite fitness: 0.24836000000000003
+INFO:root:Generation: 106
+INFO:root:pop fitness: 0.11962
+INFO:root:elite fitness: 0.24495999999999996
+INFO:root:Generation: 102
+INFO:root:pop fitness: 0.13946
+INFO:root:elite fitness: 0.2536
+INFO:root:Generation: 107
+INFO:root:pop fitness: 0.12636
+INFO:root:elite fitness: 0.22576000000000002
+INFO:root:Generation: 103
+INFO:root:pop fitness: 0.1153
+INFO:root:elite fitness: 0.21363999999999997
+INFO:root:Generation: 108
+INFO:root:pop fitness: 0.11626000000000002
+INFO:root:elite fitness: 0.21572
+INFO:root:Generation: 104
+INFO:root:pop fitness: 0.13147999999999999
+INFO:root:elite fitness: 0.2216
+INFO:root:Generation: 109
+INFO:root:pop fitness: 0.11254000000000002
+INFO:root:elite fitness: 0.21396
+INFO:root:Generation: 105
+INFO:root:pop fitness: 0.12190000000000001
+INFO:root:elite fitness: 0.22699999999999998
+INFO:root:Generation: 110
+INFO:root:pop fitness: 0.12137999999999999
+INFO:root:elite fitness: 0.23976
+INFO:root:Generation: 106
+INFO:root:pop fitness: 0.13416
+INFO:root:elite fitness: 0.221
+INFO:root:Generation: 111
+INFO:root:pop fitness: 0.09954
+INFO:root:elite fitness: 0.18480000000000005
+INFO:root:Generation: 107
+INFO:root:pop fitness: 0.11780000000000003
+INFO:root:elite fitness: 0.25544
+INFO:root:Generation: 112
+INFO:root:pop fitness: 0.10094000000000002
+INFO:root:elite fitness: 0.20035999999999998
+INFO:root:Generation: 108
+INFO:root:pop fitness: 0.12304
+INFO:root:elite fitness: 0.2184
+INFO:root:Generation: 113
+INFO:root:pop fitness: 0.10868
+INFO:root:elite fitness: 0.20752000000000004
+INFO:root:Generation: 109
+INFO:root:pop fitness: 0.11513999999999999
+INFO:root:elite fitness: 0.20184000000000002
+INFO:root:Generation: 114
+INFO:root:pop fitness: 0.09918
+INFO:root:elite fitness: 0.18576
+INFO:root:Generation: 110
+INFO:root:pop fitness: 0.13162000000000001
+INFO:root:elite fitness: 0.21895999999999996
+INFO:root:Generation: 115
+INFO:root:pop fitness: 0.10772000000000002
+INFO:root:elite fitness: 0.17156
+INFO:root:Generation: 111
+INFO:root:pop fitness: 0.13432
+INFO:root:elite fitness: 0.23860000000000003
+INFO:root:Generation: 116
+INFO:root:pop fitness: 0.10554000000000001
+INFO:root:elite fitness: 0.19364
+INFO:root:Generation: 112
+INFO:root:pop fitness: 0.11744
+INFO:root:elite fitness: 0.19076
+INFO:root:Generation: 117
+INFO:root:pop fitness: 0.09645999999999999
+INFO:root:elite fitness: 0.17643999999999999
+INFO:root:Generation: 113
+INFO:root:pop fitness: 0.10493999999999999
+INFO:root:elite fitness: 0.18788
+INFO:root:Generation: 118
+INFO:root:pop fitness: 0.10752
+INFO:root:elite fitness: 0.1852
+INFO:root:Generation: 119
+INFO:root:pop fitness: 0.10816000000000002
+INFO:root:elite fitness: 0.19891999999999999
+INFO:root:Generation: 114
+INFO:root:pop fitness: 0.12242000000000001
+INFO:root:elite fitness: 0.25195999999999996
+INFO:root:Generation: 120
+INFO:root:pop fitness: 0.11
+INFO:root:elite fitness: 0.17668
+INFO:root:Generation: 115
+INFO:root:pop fitness: 0.14808000000000002
+INFO:root:elite fitness: 0.23656000000000002
+INFO:root:Generation: 116
+INFO:root:pop fitness: 0.14055999999999996
+INFO:root:elite fitness: 0.24991999999999998
+INFO:root:Generation: 121
+INFO:root:pop fitness: 0.11448
+INFO:root:elite fitness: 0.2118
+INFO:root:Generation: 122
+INFO:root:pop fitness: 0.10062000000000001
+INFO:root:elite fitness: 0.19832
+INFO:root:Generation: 117
+INFO:root:pop fitness: 0.12664
+INFO:root:elite fitness: 0.21776
+INFO:root:Generation: 123
+INFO:root:pop fitness: 0.1246
+INFO:root:elite fitness: 0.20484000000000002
+INFO:root:Generation: 118
+INFO:root:pop fitness: 0.13694
+INFO:root:elite fitness: 0.22596000000000005
+INFO:root:Generation: 124
+INFO:root:pop fitness: 0.11290000000000001
+INFO:root:elite fitness: 0.18264
+INFO:root:Generation: 119
+INFO:root:pop fitness: 0.14464
+INFO:root:elite fitness: 0.29807999999999996
+INFO:root:Generation: 125
+INFO:root:pop fitness: 0.11154
+INFO:root:elite fitness: 0.20828
+INFO:root:Generation: 126
+INFO:root:pop fitness: 0.11492000000000001
+INFO:root:elite fitness: 0.23904
+INFO:root:Generation: 120
+INFO:root:pop fitness: 0.13232
+INFO:root:elite fitness: 0.26804
+INFO:root:Generation: 127
+INFO:root:pop fitness: 0.12611999999999998
+INFO:root:elite fitness: 0.22172
+INFO:root:Generation: 121
+INFO:root:pop fitness: 0.12324
+INFO:root:elite fitness: 0.25079999999999997
+INFO:root:Generation: 128
+INFO:root:pop fitness: 0.13332
+INFO:root:elite fitness: 0.22791999999999998
+INFO:root:Generation: 122
+INFO:root:pop fitness: 0.13177999999999998
+INFO:root:elite fitness: 0.21715999999999996
+INFO:root:Generation: 129
+INFO:root:pop fitness: 0.14356
+INFO:root:elite fitness: 0.22348
+INFO:root:Generation: 123
+INFO:root:pop fitness: 0.11826
+INFO:root:elite fitness: 0.24248
+INFO:root:Generation: 130
+INFO:root:pop fitness: 0.14326
+INFO:root:elite fitness: 0.23228000000000001
+INFO:root:Generation: 131
+INFO:root:pop fitness: 0.13014
+INFO:root:elite fitness: 0.24483999999999997
+INFO:root:Generation: 124
+INFO:root:pop fitness: 0.14508
+INFO:root:elite fitness: 0.23268
+INFO:root:Generation: 132
+INFO:root:pop fitness: 0.14980000000000002
+INFO:root:elite fitness: 0.26196
+INFO:root:Generation: 125
+INFO:root:pop fitness: 0.15416
+INFO:root:elite fitness: 0.2702
+INFO:root:Generation: 133
+INFO:root:pop fitness: 0.13960000000000003
+INFO:root:elite fitness: 0.2594
+INFO:root:Generation: 126
+INFO:root:pop fitness: 0.13434
+INFO:root:elite fitness: 0.23652
+INFO:root:Generation: 134
+INFO:root:pop fitness: 0.15254
+INFO:root:elite fitness: 0.2378
+INFO:root:Generation: 127
+INFO:root:pop fitness: 0.13088
+INFO:root:elite fitness: 0.24828
+INFO:root:Generation: 135
+INFO:root:pop fitness: 0.13091999999999998
+INFO:root:elite fitness: 0.20356000000000002
+INFO:root:Generation: 128
+INFO:root:pop fitness: 0.18460000000000004
+INFO:root:elite fitness: 0.27112
+INFO:root:Generation: 136
+INFO:root:pop fitness: 0.13924
+INFO:root:elite fitness: 0.24468000000000004
+INFO:root:Generation: 137
+INFO:root:pop fitness: 0.12982
+INFO:root:elite fitness: 0.21867999999999999
+INFO:root:Generation: 129
+INFO:root:pop fitness: 0.14404
+INFO:root:elite fitness: 0.23331999999999997
+INFO:root:Generation: 138
+INFO:root:pop fitness: 0.14703999999999998
+INFO:root:elite fitness: 0.2498
+INFO:root:Generation: 130
+INFO:root:pop fitness: 0.13714
+INFO:root:elite fitness: 0.24292000000000002
+INFO:root:Generation: 131
+INFO:root:pop fitness: 0.14329999999999998
+INFO:root:elite fitness: 0.24704
+INFO:root:Generation: 139
+INFO:root:pop fitness: 0.13194
+INFO:root:elite fitness: 0.21156
+INFO:root:Generation: 140
+INFO:root:pop fitness: 0.13446000000000002
+INFO:root:elite fitness: 0.23548
+INFO:root:Generation: 132
+INFO:root:pop fitness: 0.12706
+INFO:root:elite fitness: 0.24503999999999998
+INFO:root:Generation: 141
+INFO:root:pop fitness: 0.13234
+INFO:root:elite fitness: 0.21764
+INFO:root:Generation: 133
+INFO:root:pop fitness: 0.1527
+INFO:root:elite fitness: 0.24243999999999996
+INFO:root:Generation: 142
+INFO:root:pop fitness: 0.16276
+INFO:root:elite fitness: 0.2636
+INFO:root:Generation: 134
+INFO:root:pop fitness: 0.14303999999999997
+INFO:root:elite fitness: 0.22532
+INFO:root:Generation: 143
+INFO:root:pop fitness: 0.13354
+INFO:root:elite fitness: 0.25132
+INFO:root:Generation: 135
+INFO:root:pop fitness: 0.14388
+INFO:root:elite fitness: 0.2334
+INFO:root:Generation: 144
+INFO:root:pop fitness: 0.14153999999999997
+INFO:root:elite fitness: 0.24847999999999998
+INFO:root:Generation: 136
+INFO:root:pop fitness: 0.16316
+INFO:root:elite fitness: 0.28300000000000003
+INFO:root:Generation: 145
+INFO:root:pop fitness: 0.1512
+INFO:root:elite fitness: 0.27380000000000004
+INFO:root:Generation: 137
+INFO:root:pop fitness: 0.14656000000000002
+INFO:root:elite fitness: 0.26836
+INFO:root:Generation: 146
+INFO:root:pop fitness: 0.12912
+INFO:root:elite fitness: 0.22168
+INFO:root:Generation: 138
+INFO:root:pop fitness: 0.12675999999999998
+INFO:root:elite fitness: 0.21131999999999998
+INFO:root:Generation: 139
+INFO:root:pop fitness: 0.14596
+INFO:root:elite fitness: 0.23251999999999998
+INFO:root:Generation: 147
+INFO:root:pop fitness: 0.13154
+INFO:root:elite fitness: 0.24600000000000002
+INFO:root:Generation: 140
+INFO:root:pop fitness: 0.15250000000000002
+INFO:root:elite fitness: 0.2306
+INFO:root:Generation: 148
+INFO:root:pop fitness: 0.13698000000000002
+INFO:root:elite fitness: 0.24276
+INFO:root:Generation: 149
+INFO:root:pop fitness: 0.13052
+INFO:root:elite fitness: 0.21439999999999998
+INFO:root:Generation: 141
+INFO:root:pop fitness: 0.11542
+INFO:root:elite fitness: 0.20688000000000004
+INFO:root:Generation: 150
+INFO:root:pop fitness: 0.13191999999999998
+INFO:root:elite fitness: 0.22732
+INFO:root:Generation: 142
+INFO:root:pop fitness: 0.15628
+INFO:root:elite fitness: 0.252
+INFO:root:Generation: 151
+INFO:root:pop fitness: 0.12972
+INFO:root:elite fitness: 0.20455999999999996
+INFO:root:Generation: 143
+INFO:root:pop fitness: 0.13738
+INFO:root:elite fitness: 0.24975999999999998
+INFO:root:Generation: 152
+INFO:root:pop fitness: 0.1276
+INFO:root:elite fitness: 0.22324000000000002
+INFO:root:Generation: 144
+INFO:root:pop fitness: 0.14768
+INFO:root:elite fitness: 0.24396
+INFO:root:Generation: 153
+INFO:root:pop fitness: 0.12258
+INFO:root:elite fitness: 0.192
+INFO:root:Generation: 145
+INFO:root:pop fitness: 0.11810000000000001
+INFO:root:elite fitness: 0.18235999999999997
+INFO:root:Generation: 154
+INFO:root:pop fitness: 0.11536000000000002
+INFO:root:elite fitness: 0.19287999999999997
+INFO:root:Generation: 146
+INFO:root:pop fitness: 0.1232
+INFO:root:elite fitness: 0.21156
+INFO:root:Generation: 155
+INFO:root:pop fitness: 0.10891999999999999
+INFO:root:elite fitness: 0.2002
+INFO:root:Generation: 147
+INFO:root:pop fitness: 0.1419
+INFO:root:elite fitness: 0.2146
+INFO:root:Generation: 156
+INFO:root:pop fitness: 0.12046
+INFO:root:elite fitness: 0.22068
+INFO:root:Generation: 148
+INFO:root:pop fitness: 0.1352
+INFO:root:elite fitness: 0.23560000000000003
+INFO:root:Generation: 157
+INFO:root:pop fitness: 0.12108
+INFO:root:elite fitness: 0.20764000000000002
+INFO:root:Generation: 149
+INFO:root:pop fitness: 0.1348
+INFO:root:elite fitness: 0.25952
+INFO:root:Generation: 158
+INFO:root:pop fitness: 0.12064
+INFO:root:elite fitness: 0.18552
+INFO:root:Generation: 150
+INFO:root:pop fitness: 0.14300000000000002
+INFO:root:elite fitness: 0.23740000000000003
+INFO:root:Generation: 159
+INFO:root:pop fitness: 0.10157999999999999
+INFO:root:elite fitness: 0.17276
+INFO:root:Generation: 151
+INFO:root:pop fitness: 0.13444
+INFO:root:elite fitness: 0.26776000000000005
+INFO:root:Generation: 160
+INFO:root:pop fitness: 0.1067
+INFO:root:elite fitness: 0.19323999999999997
+INFO:root:Generation: 152
+INFO:root:pop fitness: 0.14309999999999998
+INFO:root:elite fitness: 0.24244000000000004
+INFO:root:Generation: 161
+INFO:root:pop fitness: 0.14058
+INFO:root:elite fitness: 0.22583999999999999
+INFO:root:Generation: 153
+INFO:root:pop fitness: 0.13419999999999999
+INFO:root:elite fitness: 0.22836
+INFO:root:Generation: 162
+INFO:root:pop fitness: 0.14628
+INFO:root:elite fitness: 0.23619999999999997
+INFO:root:Generation: 154
+INFO:root:pop fitness: 0.15188000000000001
+INFO:root:elite fitness: 0.27875999999999995
+INFO:root:Generation: 163
+INFO:root:pop fitness: 0.12822
+INFO:root:elite fitness: 0.22808000000000003
+INFO:root:Generation: 155
+INFO:root:pop fitness: 0.15186
+INFO:root:elite fitness: 0.27924
+INFO:root:Generation: 164
+INFO:root:pop fitness: 0.13726000000000002
+INFO:root:elite fitness: 0.25000000000000006
+INFO:root:Generation: 156
+INFO:root:pop fitness: 0.13912000000000002
+INFO:root:elite fitness: 0.2412
+INFO:root:Generation: 165
+INFO:root:pop fitness: 0.14084
+INFO:root:elite fitness: 0.253
+INFO:root:Generation: 157
+INFO:root:pop fitness: 0.14221999999999999
+INFO:root:elite fitness: 0.22756
+INFO:root:Generation: 166
+INFO:root:pop fitness: 0.12444
+INFO:root:elite fitness: 0.23492000000000002
+INFO:root:Generation: 158
+INFO:root:pop fitness: 0.14778000000000002
+INFO:root:elite fitness: 0.23879999999999998
+INFO:root:Generation: 167
+INFO:root:pop fitness: 0.1409
+INFO:root:elite fitness: 0.24916
+INFO:root:Generation: 159
+INFO:root:pop fitness: 0.14288
+INFO:root:elite fitness: 0.22523999999999997
+INFO:root:Generation: 168
+INFO:root:pop fitness: 0.14886
+INFO:root:elite fitness: 0.24564
+INFO:root:Generation: 160
+INFO:root:pop fitness: 0.14844
+INFO:root:elite fitness: 0.25016
+INFO:root:Generation: 169
+INFO:root:pop fitness: 0.13396000000000005
+INFO:root:elite fitness: 0.22504000000000002
+INFO:root:Generation: 161
+INFO:root:pop fitness: 0.15303999999999998
+INFO:root:elite fitness: 0.24115999999999999
+INFO:root:Generation: 170
+INFO:root:pop fitness: 0.1396
+INFO:root:elite fitness: 0.23692
+INFO:root:Generation: 162
+INFO:root:pop fitness: 0.13456
+INFO:root:elite fitness: 0.2536
+INFO:root:Generation: 171
+INFO:root:pop fitness: 0.14966
+INFO:root:elite fitness: 0.23815999999999998
+INFO:root:Generation: 163
+INFO:root:pop fitness: 0.1266
+INFO:root:elite fitness: 0.24907999999999997
+INFO:root:Generation: 172
+INFO:root:pop fitness: 0.12105999999999999
+INFO:root:elite fitness: 0.20623999999999998
+INFO:root:Generation: 164
+INFO:root:pop fitness: 0.15286
+INFO:root:elite fitness: 0.29136
+INFO:root:Generation: 173
+INFO:root:pop fitness: 0.1378
+INFO:root:elite fitness: 0.26032000000000005
+INFO:root:Generation: 165
+INFO:root:pop fitness: 0.13696
+INFO:root:elite fitness: 0.22552
+INFO:root:Generation: 174
+INFO:root:pop fitness: 0.13308
+INFO:root:elite fitness: 0.24284
+INFO:root:Generation: 166
+INFO:root:pop fitness: 0.1325
+INFO:root:elite fitness: 0.25336000000000003
+INFO:root:Generation: 175
+INFO:root:pop fitness: 0.1479
+INFO:root:elite fitness: 0.2324
+INFO:root:Generation: 167
+INFO:root:pop fitness: 0.16396
+INFO:root:elite fitness: 0.28484
+INFO:root:Generation: 168
+INFO:root:pop fitness: 0.13916
+INFO:root:elite fitness: 0.23652
+INFO:root:Generation: 176
+INFO:root:pop fitness: 0.13858
+INFO:root:elite fitness: 0.25076
+INFO:root:Generation: 169
+INFO:root:pop fitness: 0.15874
+INFO:root:elite fitness: 0.2682
+INFO:root:Generation: 177
+INFO:root:pop fitness: 0.14248
+INFO:root:elite fitness: 0.26324
+INFO:root:Generation: 170
+INFO:root:pop fitness: 0.13908
+INFO:root:elite fitness: 0.22335999999999998
+INFO:root:Generation: 171
+INFO:root:pop fitness: 0.13097999999999999
+INFO:root:elite fitness: 0.23919999999999997
+INFO:root:Generation: 178
+INFO:root:pop fitness: 0.11993999999999999
+INFO:root:elite fitness: 0.22684
+INFO:root:Generation: 172
+INFO:root:pop fitness: 0.16166
+INFO:root:elite fitness: 0.26664
+INFO:root:Generation: 179
+INFO:root:pop fitness: 0.13943999999999998
+INFO:root:elite fitness: 0.28184000000000003
+INFO:root:Generation: 173
+INFO:root:pop fitness: 0.12229999999999999
+INFO:root:elite fitness: 0.20236
+INFO:root:Generation: 180
+INFO:root:pop fitness: 0.15326
+INFO:root:elite fitness: 0.24272
+INFO:root:Generation: 174
+INFO:root:pop fitness: 0.13061999999999999
+INFO:root:elite fitness: 0.24831999999999999
+INFO:root:Generation: 181
+INFO:root:pop fitness: 0.13862
+INFO:root:elite fitness: 0.26876
+INFO:root:Generation: 175
+INFO:root:pop fitness: 0.15194000000000002
+INFO:root:elite fitness: 0.26152000000000003
+INFO:root:Generation: 182
+INFO:root:pop fitness: 0.16736
+INFO:root:elite fitness: 0.28116
+INFO:root:Generation: 176
+INFO:root:pop fitness: 0.15318
+INFO:root:elite fitness: 0.24720000000000003
+INFO:root:Generation: 183
+INFO:root:pop fitness: 0.14932
+INFO:root:elite fitness: 0.22659999999999997
+INFO:root:Generation: 177
+INFO:root:pop fitness: 0.11741999999999997
+INFO:root:elite fitness: 0.21232000000000004
+INFO:root:Generation: 184
+INFO:root:pop fitness: 0.13782
+INFO:root:elite fitness: 0.23576
+INFO:root:Generation: 178
+INFO:root:pop fitness: 0.14273999999999998
+INFO:root:elite fitness: 0.2284
+INFO:root:Generation: 185
+INFO:root:pop fitness: 0.14423999999999998
+INFO:root:elite fitness: 0.26856
+INFO:root:Generation: 179
+INFO:root:pop fitness: 0.15894
+INFO:root:elite fitness: 0.26311999999999997
+INFO:root:Generation: 186
+INFO:root:pop fitness: 0.15290000000000004
+INFO:root:elite fitness: 0.26488
+INFO:root:Generation: 180
+INFO:root:pop fitness: 0.13838
+INFO:root:elite fitness: 0.23544
+INFO:root:Generation: 187
+INFO:root:pop fitness: 0.14664000000000002
+INFO:root:elite fitness: 0.26696
+INFO:root:Generation: 181
+INFO:root:pop fitness: 0.15032
+INFO:root:elite fitness: 0.21952000000000002
+INFO:root:Generation: 188
+INFO:root:pop fitness: 0.1429
+INFO:root:elite fitness: 0.25592
+INFO:root:Generation: 182
+INFO:root:pop fitness: 0.15356
+INFO:root:elite fitness: 0.29247999999999996
+INFO:root:Generation: 189
+INFO:root:pop fitness: 0.15321999999999997
+INFO:root:elite fitness: 0.25392
+INFO:root:Generation: 183
+INFO:root:pop fitness: 0.13584000000000002
+INFO:root:elite fitness: 0.26052
+INFO:root:Generation: 190
+INFO:root:pop fitness: 0.14756000000000002
+INFO:root:elite fitness: 0.23399999999999999
+INFO:root:Generation: 184
+INFO:root:pop fitness: 0.14326
+INFO:root:elite fitness: 0.2504
+INFO:root:Generation: 191
+INFO:root:pop fitness: 0.13331999999999997
+INFO:root:elite fitness: 0.2118
+INFO:root:Generation: 185
+INFO:root:pop fitness: 0.11846
+INFO:root:elite fitness: 0.19356
+INFO:root:Generation: 192
+INFO:root:pop fitness: 0.12876
+INFO:root:elite fitness: 0.20908000000000002
+INFO:root:Generation: 186
+INFO:root:pop fitness: 0.11670000000000001
+INFO:root:elite fitness: 0.21
+INFO:root:Generation: 193
+INFO:root:pop fitness: 0.13974
+INFO:root:elite fitness: 0.26360000000000006
+INFO:root:Generation: 187
+INFO:root:pop fitness: 0.12183999999999999
+INFO:root:elite fitness: 0.21819999999999998
+INFO:root:Generation: 194
+INFO:root:pop fitness: 0.16435999999999995
+INFO:root:elite fitness: 0.25248000000000004
+INFO:root:Generation: 188
+INFO:root:pop fitness: 0.12611999999999998
+INFO:root:elite fitness: 0.2184
+INFO:root:Generation: 195
+INFO:root:pop fitness: 0.13202000000000003
+INFO:root:elite fitness: 0.23811999999999997
+INFO:root:Generation: 189
+INFO:root:pop fitness: 0.12958000000000003
+INFO:root:elite fitness: 0.20559999999999998
+INFO:root:Generation: 196
+INFO:root:pop fitness: 0.14792
+INFO:root:elite fitness: 0.23628
+INFO:root:Generation: 190
+INFO:root:pop fitness: 0.12632
+INFO:root:elite fitness: 0.23364000000000001
+INFO:root:Generation: 197
+INFO:root:pop fitness: 0.12704000000000001
+INFO:root:elite fitness: 0.22044
+INFO:root:Generation: 198
+INFO:root:pop fitness: 0.14944000000000002
+INFO:root:elite fitness: 0.2302
+INFO:root:Generation: 191
+INFO:root:pop fitness: 0.13022000000000003
+INFO:root:elite fitness: 0.19388000000000002
+INFO:root:Generation: 199
+INFO:root:pop fitness: 0.15554
+INFO:root:elite fitness: 0.27328
+INFO:root:Generation: 192
+INFO:root:pop fitness: 0.13871999999999998
+INFO:root:elite fitness: 0.2052
+INFO:root:Generation: 193
+INFO:root:pop fitness: 0.11496
+INFO:root:elite fitness: 0.1902
+INFO:root:Generation: 194
+INFO:root:pop fitness: 0.14284
+INFO:root:elite fitness: 0.23184000000000002
+INFO:root:Generation: 195
+INFO:root:pop fitness: 0.10990000000000003
+INFO:root:elite fitness: 0.19907999999999998
+INFO:root:Generation: 196
+INFO:root:pop fitness: 0.13049999999999998
+INFO:root:elite fitness: 0.23632
+INFO:root:Generation: 197
+INFO:root:pop fitness: 0.12673999999999996
+INFO:root:elite fitness: 0.203
+INFO:root:Generation: 198
+INFO:root:pop fitness: 0.15624
+INFO:root:elite fitness: 0.26968
+INFO:root:Generation: 199
+INFO:root:pop fitness: 0.13390000000000002
+INFO:root:elite fitness: 0.22512000000000001

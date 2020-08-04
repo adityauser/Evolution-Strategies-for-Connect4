@@ -1,0 +1,615 @@
+==========================================
+SLURM_CLUSTER_NAME = param-shivay
+SLURM_JOB_ACCOUNT = mathematical_engg
+SLURM_JOB_ID = 390497
+SLURM_JOB_NAME = ucbReset
+SLURM_JOB_NODELIST = cn041
+SLURM_JOB_USER = aditya.singh.mat17.iitbhu
+SLURM_JOB_UID = 5255
+SLURM_JOB_PARTITION = cpu
+SLURM_TASK_PID = 296569
+SLURM_SUBMIT_DIR = /home/aditya.singh.mat17.iitbhu/aditya.singh.mat17.iitbhu/UCBandES/Evolution-Strategies-RL/UCBvsES
+SLURM_CPUS_ON_NODE = 40
+SLURM_NTASKS = 40
+SLURM_TASK_PID = 296569
+==========================================
+Start: Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10036000000000002
+elite fitness 0.11066
+Generation:  50
+pop fitness 0.13374999999999998
+elite fitness 0.26004
+Generation:  100
+pop fitness 0.15918
+elite fitness 0.28675999999999996
+Generation:  150
+pop fitness 0.19363000000000002
+elite fitness 0.35396
+Done:
+Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09869
+elite fitness 0.11230000000000002
+Generation:  50
+pop fitness 0.12420000000000002
+elite fitness 0.24192
+Generation:  100
+pop fitness 0.12572
+elite fitness 0.23540000000000003
+Generation:  150
+pop fitness 0.16875000000000004
+elite fitness 0.31772
+Done:
+Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09954999999999999
+elite fitness 0.11013999999999999
+Generation:  50
+pop fitness 0.15609
+elite fitness 0.2759
+Generation:  100
+pop fitness 0.18656000000000003
+elite fitness 0.28512
+Generation:  150
+pop fitness 0.17806999999999998
+elite fitness 0.2986
+Done:
+Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09849999999999999
+elite fitness 0.11212000000000001
+Generation:  50
+pop fitness 0.15802
+elite fitness 0.28162
+Generation:  100
+pop fitness 0.20049000000000003
+elite fitness 0.34126000000000006
+Generation:  150
+pop fitness 0.18381
+elite fitness 0.32862
+Done:
+Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09704
+elite fitness 0.11002
+Generation:  50
+pop fitness 0.11506000000000002
+elite fitness 0.19481999999999997
+Generation:  100
+pop fitness 0.15825999999999998
+elite fitness 0.27596
+Generation:  150
+pop fitness 0.15971
+elite fitness 0.28025999999999995
+Done:
+Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09850999999999999
+elite fitness 0.11439999999999997
+Generation:  50
+pop fitness 0.12051
+elite fitness 0.22436000000000003
+Generation:  100
+pop fitness 0.14669999999999997
+elite fitness 0.2679
+Generation:  150
+pop fitness 0.17028999999999997
+elite fitness 0.29984
+Done:
+Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09941999999999998
+elite fitness 0.11180000000000001
+Generation:  50
+pop fitness 0.14507
+elite fitness 0.25073999999999996
+Generation:  100
+pop fitness 0.17308
+elite fitness 0.29638
+Generation:  150
+pop fitness 0.21243
+elite fitness 0.34008000000000005
+Done:
+Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09822000000000002
+elite fitness 0.10998
+Generation:  50
+pop fitness 0.13496
+elite fitness 0.24630000000000002
+Generation:  100
+pop fitness 0.15943
+elite fitness 0.30056000000000005
+Generation:  150
+pop fitness 0.15413
+elite fitness 0.28872
+Done:
+Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10197000000000003
+elite fitness 0.11680000000000001
+Generation:  50
+pop fitness 0.13748
+elite fitness 0.26138
+Generation:  100
+pop fitness 0.16881999999999997
+elite fitness 0.28934
+Generation:  150
+pop fitness 0.17501000000000008
+elite fitness 0.31886
+Done:
+Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10124000000000002
+elite fitness 0.11649999999999996
+Generation:  50
+pop fitness 0.13668000000000002
+elite fitness 0.2515
+Generation:  100
+pop fitness 0.15185
+elite fitness 0.26132000000000005
+Generation:  150
+pop fitness 0.20354999999999998
+elite fitness 0.34772000000000003
+Done:
+Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09743
+elite fitness 0.10928
+Generation:  50
+pop fitness 0.15142
+elite fitness 0.29148
+Generation:  100
+pop fitness 0.16450000000000004
+elite fitness 0.2860599999999999
+Generation:  150
+pop fitness 0.18215
+elite fitness 0.32894
+Done:
+Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.1012
+elite fitness 0.11254000000000002
+Generation:  50
+pop fitness 0.1561
+elite fitness 0.28544
+Generation:  100
+pop fitness 0.16516999999999998
+elite fitness 0.26958
+Generation:  150
+pop fitness 0.18153
+elite fitness 0.31108
+Done:
+Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09878
+elite fitness 0.10896
+Generation:  50
+pop fitness 0.14585000000000004
+elite fitness 0.27244
+Generation:  100
+pop fitness 0.1834
+elite fitness 0.33936
+Generation:  150
+pop fitness 0.19976
+elite fitness 0.33293999999999996
+Done:
+Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10198999999999998
+elite fitness 0.11342
+Generation:  50
+pop fitness 0.15427
+elite fitness 0.28468000000000004
+Generation:  100
+pop fitness 0.16282
+elite fitness 0.31284
+Generation:  150
+pop fitness 0.19128000000000006
+elite fitness 0.33598
+Done:
+Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09734999999999998
+elite fitness 0.10860000000000002
+Generation:  50
+pop fitness 0.14946
+elite fitness 0.28128
+Generation:  100
+pop fitness 0.17466
+elite fitness 0.28632
+Generation:  150
+pop fitness 0.18475999999999998
+elite fitness 0.29618
+Done:
+Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09992000000000001
+elite fitness 0.11168000000000002
+Generation:  50
+pop fitness 0.14052
+elite fitness 0.225
+Generation:  100
+pop fitness 0.15366
+elite fitness 0.2772
+Generation:  150
+pop fitness 0.15258000000000002
+elite fitness 0.27762
+Done:
+Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09999999999999998
+elite fitness 0.11515999999999998
+Generation:  50
+pop fitness 0.13916
+elite fitness 0.21431999999999995
+Generation:  100
+pop fitness 0.16809000000000002
+elite fitness 0.2835
+Generation:  150
+pop fitness 0.18495999999999996
+elite fitness 0.33858000000000005
+Done:
+Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10146
+elite fitness 0.11175999999999998
+Generation:  50
+pop fitness 0.14349
+elite fitness 0.29156
+Generation:  100
+pop fitness 0.17747000000000004
+elite fitness 0.35350000000000004
+Generation:  150
+pop fitness 0.16471
+elite fitness 0.29436
+Done:
+Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09920999999999999
+elite fitness 0.11208
+Generation:  50
+pop fitness 0.13697
+elite fitness 0.24866
+Generation:  100
+pop fitness 0.13643
+elite fitness 0.24325999999999998
+Generation:  150
+pop fitness 0.18622
+elite fitness 0.33458
+Done:
+Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10190000000000002
+elite fitness 0.11356
+Generation:  50
+pop fitness 0.13617
+elite fitness 0.26280000000000003
+Generation:  100
+pop fitness 0.15042999999999998
+elite fitness 0.28882
+Generation:  150
+pop fitness 0.18223999999999996
+elite fitness 0.30216
+Done:
+Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10144000000000002
+elite fitness 0.11156
+Generation:  50
+pop fitness 0.13321999999999998
+elite fitness 0.2579
+Generation:  100
+pop fitness 0.1752
+elite fitness 0.34098
+Generation:  150
+pop fitness 0.16958
+elite fitness 0.30562
+Done:
+Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10013999999999999
+elite fitness 0.11192
+Generation:  50
+pop fitness 0.13485
+elite fitness 0.2491
+Generation:  100
+pop fitness 0.14648999999999998
+elite fitness 0.26733999999999997
+Generation:  150
+pop fitness 0.19737000000000002
+elite fitness 0.31532000000000004
+Done:
+Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09997
+elite fitness 0.11205999999999998
+Generation:  50
+pop fitness 0.15980000000000003
+elite fitness 0.28290000000000004
+Generation:  100
+pop fitness 0.16542
+elite fitness 0.29822
+Generation:  150
+pop fitness 0.20357
+elite fitness 0.34515999999999997
+Done:
+Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09957999999999999
+elite fitness 0.11379999999999998
+Generation:  50
+pop fitness 0.12295000000000002
+elite fitness 0.22524000000000005
+Generation:  100
+pop fitness 0.18062999999999996
+elite fitness 0.3497799999999999
+Generation:  150
+pop fitness 0.18429
+elite fitness 0.33246000000000003
+Done:
+Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09997000000000003
+elite fitness 0.1119
+Generation:  50
+pop fitness 0.12383000000000001
+elite fitness 0.24378000000000002
+Generation:  100
+pop fitness 0.1588
+elite fitness 0.29059999999999997
+Generation:  150
+pop fitness 0.18383000000000002
+elite fitness 0.3045
+Done:
+Namespace(arms='10', hidden='32', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10017000000000004
+elite fitness 0.11137999999999999
+Generation:  50
+pop fitness 0.09610999999999999
+elite fitness 0.21642
+Generation:  100
+pop fitness 0.18305999999999997
+elite fitness 0.31072
+Generation:  150
+pop fitness 0.15525
+elite fitness 0.2722
+Done:
+Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10020000000000003
+elite fitness 0.11359999999999999
+Generation:  50
+pop fitness 0.11131
+elite fitness 0.18305999999999997
+Generation:  100
+pop fitness 0.13570000000000002
+elite fitness 0.27236000000000005
+Generation:  150
+pop fitness 0.16861000000000004
+elite fitness 0.27555999999999997
+Done:
+Namespace(arms='10', hidden='8', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10024000000000001
+elite fitness 0.11286
+Generation:  50
+pop fitness 0.13717000000000001
+elite fitness 0.24326
+Generation:  100
+pop fitness 0.1668
+elite fitness 0.2666
+Generation:  150
+pop fitness 0.19157999999999997
+elite fitness 0.32280000000000003
+Done:
+Namespace(arms='10', hidden='16', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09984
+elite fitness 0.11138000000000002
+Generation:  50
+pop fitness 0.10914
+elite fitness 0.25324
+Generation:  100
+pop fitness 0.14950999999999998
+elite fitness 0.27282
+Generation:  150
+pop fitness 0.1766
+elite fitness 0.30502
+Done:
+Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10000999999999999
+elite fitness 0.11001999999999999
+Generation:  50
+pop fitness 0.11599000000000002
+elite fitness 0.23964000000000002
+Generation:  100
+pop fitness 0.12803
+elite fitness 0.23935999999999996
+Generation:  150
+pop fitness 0.16596
+elite fitness 0.31472
+Done:
+Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10003000000000001
+elite fitness 0.11198000000000001
+Generation:  50
+pop fitness 0.13319
+elite fitness 0.26686000000000004
+Generation:  100
+pop fitness 0.16796000000000003
+elite fitness 0.28106
+Generation:  150
+pop fitness 0.18672999999999998
+elite fitness 0.34818
+Done:
+Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10049
+elite fitness 0.11199999999999999
+Generation:  50
+pop fitness 0.13665
+elite fitness 0.23526000000000002
+Generation:  100
+pop fitness 0.17934999999999998
+elite fitness 0.32268
+Generation:  150
+pop fitness 0.17046000000000003
+elite fitness 0.2972
+Done:
+Namespace(arms='10', hidden='64', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10037999999999998
+elite fitness 0.11236
+Generation:  50
+pop fitness 0.15829000000000001
+elite fitness 0.29016
+Generation:  100
+pop fitness 0.17428999999999997
+elite fitness 0.32218
+Generation:  150
+pop fitness 0.19148000000000004
+elite fitness 0.32328
+Done:
+Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09978999999999996
+elite fitness 0.11040000000000001
+Generation:  50
+pop fitness 0.11037000000000001
+elite fitness 0.22880000000000003
+Generation:  100
+pop fitness 0.13329000000000002
+elite fitness 0.23878
+Generation:  150
+pop fitness 0.14612
+elite fitness 0.28008
+Done:
+Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09973000000000001
+elite fitness 0.11085999999999999
+Generation:  50
+pop fitness 0.14129999999999998
+elite fitness 0.2358
+Generation:  100
+pop fitness 0.17994000000000007
+elite fitness 0.34564
+Generation:  150
+pop fitness 0.17972
+elite fitness 0.34678
+Done:
+Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09942999999999998
+elite fitness 0.11268
+Generation:  50
+pop fitness 0.13537
+elite fitness 0.25722
+Generation:  100
+pop fitness 0.16216
+elite fitness 0.30648000000000003
+Generation:  150
+pop fitness 0.16338
+elite fitness 0.2668
+Done:
+Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=False, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10215999999999999
+elite fitness 0.11268
+Generation:  50
+pop fitness 0.14039999999999997
+elite fitness 0.26846000000000003
+Generation:  100
+pop fitness 0.16227999999999998
+elite fitness 0.2797
+Generation:  150
+pop fitness 0.18810999999999997
+elite fitness 0.34208
+Done:
+Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09942999999999999
+elite fitness 0.11174
+Generation:  50
+pop fitness 0.13674999999999998
+elite fitness 0.24910000000000004
+Generation:  100
+pop fitness 0.16477
+elite fitness 0.3152
+Generation:  150
+pop fitness 0.18187000000000006
+elite fitness 0.3195
+Done:
+Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v1', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.09871
+elite fitness 0.11184000000000001
+Generation:  50
+pop fitness 0.13668000000000002
+elite fitness 0.27052000000000004
+Generation:  100
+pop fitness 0.15031
+elite fitness 0.29572
+Generation:  150
+pop fitness 0.16951999999999998
+elite fitness 0.32378
+Done:
+Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.1', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Start: Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
+Generation:  0
+pop fitness 0.10047000000000002
+elite fitness 0.11234000000000002
+Generation:  50
+pop fitness 0.15636
+elite fitness 0.30132000000000003
+Generation:  100
+pop fitness 0.16319000000000003
+elite fitness 0.28792000000000006
+Generation:  150
+pop fitness 0.19133
+elite fitness 0.3179
+Done:
+Namespace(arms='10', hidden='128', layers='1', max_gen='200', message='', mutation_mag='0.01', name='resetEnv50_v2', noise=True, pop_size='100', save_result=True, trials='100')
