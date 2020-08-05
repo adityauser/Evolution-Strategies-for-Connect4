@@ -28,6 +28,7 @@ parser.add_argument("--message", help="description of the experiment", default="
 parser.add_argument("--layers", help="number of ann hidden layers",default='6')
 parser.add_argument("--max_gen",help="total number of generation",default='100')
 parser.add_argument("--arms",help="total number of arms",default='10')
+parser.add_argument("--steps",help="number of generations after which the problems are reset",default='1')
 
 
 #Parse arguments
@@ -37,11 +38,11 @@ args = parser.parse_args()
 
 if args.save_result:
     try:
-        os.makedirs('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name)
+        os.makedirs('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'steps' + args.steps + 'trials' + args.trials + args.name)
     except:
         pass
 
-LOG_FILENAME = 'results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name + '/UCBvsES.log'
+LOG_FILENAME = 'results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'steps' + args.steps + 'trials' + args.trials + args.name + '/UCBvsES.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
 
@@ -494,7 +495,7 @@ class Individual:
 
         return new_params
     
-    def run(self, envs):
+    def run(self, envs, reset=False):
         global state_archive
         for env in envs:
             for _ in range(self.trials):
@@ -506,7 +507,8 @@ class Individual:
                 self.matches += 1
             state_archive.appendleft(random.choice(self.buffer))
             self.reset()
-            env.reset()
+            if reset:
+                env.reset()
         self.fitness = self.score/self.matches
         self.matches = 0
         self.score = 0
@@ -549,6 +551,10 @@ if (__name__ == "__main__"):
 	#number of arms
 	no_arms = int(args.arms)
 
+	#step after env reset
+	steps = int(args.steps)
+	reset = False
+
 	#Number of samples for each bandit problem
 	trials = int(args.trials)
 
@@ -578,7 +584,7 @@ if (__name__ == "__main__"):
 	    
 	for gen in range(generations):
 	    
-	    [indv.run(all_envs[i]) for i, indv in enumerate(population)]
+	    [indv.run(all_envs[i], reset) for i, indv in enumerate(population)]
 	    
 	    #Getting elite agent        
 	    for i in range(len(elite)):
@@ -610,6 +616,8 @@ if (__name__ == "__main__"):
 	        to_kill = random.sample(population, greedy_kill)
 	        to_kill = reduce(lambda x, y: x if x.fitness < y.fitness else y, to_kill)
 	        population.remove(to_kill)
+
+	    reset = (gen+1)%steps==0
 		
 	   # [env.reset() for env in envs]
 	  #  print('test fitness', np.mean([ind.fitness for ind in population]))
@@ -652,9 +660,9 @@ if (__name__ == "__main__"):
 
 	if args.save_result:
             if not args.noise:
-                plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name + '/training'+'.svg', format='svg')
+                plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'steps' + args.steps + 'trials' + args.trials + args.name + '/training'+'.svg', format='svg')
             else:
-                plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name + '/noise_training'+'.svg', format='svg')
+                plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'steps' + args.steps + 'trials' + args.trials + args.name + '/noise_training'+'.svg', format='svg')
 			
 
 	plt.close()
@@ -751,9 +759,9 @@ if (__name__ == "__main__"):
 
 	if args.save_result:
             if not args.noise:
-                plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name + '/testing'+'.svg', format='svg')
+                plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'steps' + args.steps + 'trials' + args.trials + args.name + '/testing'+'.svg', format='svg')
             else:
-                plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'trials' + args.trials + args.name + '/noise_testing'+'.svg', format='svg')
+                plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'steps' + args.steps + 'trials' + args.trials + args.name + '/noise_testing'+'.svg', format='svg')
 			
 
 
