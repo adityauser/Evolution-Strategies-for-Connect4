@@ -495,8 +495,11 @@ class Individual:
 
         return new_params
     
-    def run(self, envs, reset=False):
+    def run(self, envs, reset=True):
         global state_archive
+        self.net_rwd = 0
+        self.matches = 0
+        self.score = 0
         for env in envs:
             for _ in range(self.trials):
                 arm = self.pull()
@@ -509,10 +512,7 @@ class Individual:
             self.reset()
             if reset:
                 env.reset()
-        self.fitness = self.score/self.matches
-        self.matches = 0
-        self.score = 0
-        
+        self.fitness = self.net_rwd/self.matches        
         
 
 
@@ -550,10 +550,6 @@ if (__name__ == "__main__"):
 	generations = int(args.max_gen)
 	#number of arms
 	no_arms = int(args.arms)
-
-	#step after env reset
-	steps = int(args.steps)
-	reset = False
 
 	#Number of samples for each bandit problem
 	trials = int(args.trials)
@@ -617,7 +613,6 @@ if (__name__ == "__main__"):
 	        to_kill = reduce(lambda x, y: x if x.fitness < y.fitness else y, to_kill)
 	        population.remove(to_kill)
 
-	    reset = (gen+1)%steps==0
 		
 	   # [env.reset() for env in envs]
 	  #  print('test fitness', np.mean([ind.fitness for ind in population]))
@@ -638,7 +633,7 @@ if (__name__ == "__main__"):
 	    for _ in range(trials):    
 	        arm = ucb.pull()
 	        r = env.pull_arm(arm)
-	        ucb_rwd += int(env.best_arm==arm)
+	        ucb_rwd += r
 	        ucb.update(arm, r)
 	    ucb.reset()
 
@@ -687,33 +682,46 @@ if (__name__ == "__main__"):
 	test_pop = []
 	test_elite = []
 	test_ucb = []
+
+	test_cummBest_pop = []
+	test_cummBest_elite = []
+	test_cummBest_ucb = []
 	for env in test_envs:
 	    test_rwd = 0
+	    test_cummBest_rwd = 0
 	    for indv in population:
                 indv.played = False
                 indv.score = 0
                 indv.fitness = 0
-                indv.run([env])
+                indv.run([env], reset=False)
                 test_rwd += indv.fitness
+                test_cummBest_rwd += indv.score/indv.matches   
 	    test_pop.append(round(test_rwd/psize, 3))
+	    test_cummBest_pop.append(round(test_cummBest_rwd/psize, 3))
 	    
 	    test_rwd = 0
+	    test_cummBest_rwd = 0
 	    for indv in elite:
                 indv.played = False
                 indv.score = 0
                 indv.fitness = 0
-                indv.run([env])
+                indv.run([env], reset=False)
                 test_rwd += indv.fitness
+                test_cummBest_rwd += indv.score/indv.matches   
 	    test_elite.append(round(test_rwd/psize, 3))
+	    test_cummBest_elite.append(round(test_cummBest_rwd/psize, 3))
 	    
 	    test_rwd = 0
+	    test_cummBest_rwd = 0
 	    for _ in range(trials):    
                 arm = ucb.pull()
                 r = env.pull_arm(arm)
-                test_rwd += int(env.best_arm==arm)
+                test_rwd += r
+                test_cummBest_rwd += int(env.best_arm==arm)
                 ucb.update(arm, r)
 	    ucb.reset()
 	    test_ucb.append(round(test_rwd/trials, 3))
+	    test_cummBest_ucb.append(round(test_cummBest_rwd/psize, 3))
 
 	    
 
@@ -762,6 +770,52 @@ if (__name__ == "__main__"):
                 plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'steps' + args.steps + 'trials' + args.trials + args.name + '/testing'+'.svg', format='svg')
             else:
                 plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'steps' + args.steps + 'trials' + args.trials + args.name + '/noise_testing'+'.svg', format='svg')
+			
+	plt.close()
+
+        #Best Arm
+
+	labels = ['Env ' + str(i) for i in range(len(test_envs))]
+
+	x = np.arange(len(labels))  # the label locations
+	width = 0.5  # the width of the bars
+
+	fig, ax = plt.subplots()
+
+
+	rects1 = ax.bar(x - width/2, test_cummBest_pop, width/2, label='Population')
+	rects2 = ax.bar(x, test_cummBest_elite, width/2, label='Elite')
+	rects3 = ax.bar(x + width/2, test_cummBest_ucb, width/2, label='UCB')
+
+	# Add some text for labels, title and custom x-axis tick labels, etc.
+	ax.set_ylabel('Scores')
+	ax.set_title('Scores for different envirnoments')
+	ax.set_xticks(x)
+	ax.set_xticklabels(labels)
+	ax.legend()
+
+
+	def autolabel(rects):
+	    for rect in rects:
+                height = rect.get_height()
+                ax.annotate('{}'.format(height),
+		            xy=(rect.get_x() + rect.get_width() / 2, height),
+		            xytext=(0, 3),  # 3 points vertical offset
+		            textcoords="offset points",
+		            ha='center', va='bottom')
+
+
+	autolabel(rects1)
+	autolabel(rects2)
+	autolabel(rects3)
+
+	fig.tight_layout()
+
+	if args.save_result:
+            if not args.noise:
+                plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'steps' + args.steps + 'trials' + args.trials + args.name + '/testingCummutativeBest'+'.svg', format='svg')
+            else:
+                plt.savefig('results/'+args.layers + 'x' + args.hidden + 'mag' + args.mutation_mag + 'arms' + args.arms + 'psize' + args.pop_size + 'steps' + args.steps + 'trials' + args.trials + args.name + '/noise_testingCummutativeBest'+'.svg', format='svg')
 			
 
 
