@@ -721,7 +721,7 @@ if (__name__ == "__main__"):
                 ucb.update(arm, r)
 	    ucb.reset()
 	    test_ucb.append(round(test_rwd/trials, 3))
-	    test_cummBest_ucb.append(round(test_cummBest_rwd/psize, 3))
+	    test_cummBest_ucb.append(round(test_cummBest_rwd/trials, 3))
 
 	    
 
@@ -730,12 +730,16 @@ if (__name__ == "__main__"):
 
 
 	labels = ['Env ' + str(i) for i in range(len(test_envs))]
+	labels.append('Avg')
 
 	x = np.arange(len(labels))  # the label locations
 	width = 0.5  # the width of the bars
 
 	fig, ax = plt.subplots()
-
+	
+	test_pop.append(round(np.mean(test_pop), 3))
+	test_elite.append(round(np.mean(test_elite), 3))
+	test_ucb.append(round(np.mean(test_ucb), 3))
 
 	rects1 = ax.bar(x - width/2, test_pop, width/2, label='Population')
 	rects2 = ax.bar(x, test_elite, width/2, label='Elite')
