@@ -34,12 +34,10 @@ parser.add_argument("--population_play", help="play matches against population",
 parser.add_argument("--fast", help="don't run unnecessary part od code", action="store_true")
 parser.add_argument("--init", help="init rule", default="xavier")
 parser.add_argument("--message", help="description of the experiment", default="")
-parser.add_argument("--celltype", help="recurrent cell type",default="lstm",choices=['lstm','gru','rnn'])
 parser.add_argument("--layers", help="number of ann hidden layers",default=6)
 parser.add_argument("--activation",help="ann activation function",default="relu")
 parser.add_argument("--max_gen",help="total number of generation",default=100)
 parser.add_argument("--domain",help="Experimental domain", default="connect_four",choices=['connect_four_CNN','breadcrumb_maze', 'connect_four'])
-parser.add_argument("--frameskip",help="frameskip amount (i.e. query agent every X frames for action)", default="3")
 
 #Parse arguments
 args = parser.parse_args()
@@ -61,24 +59,28 @@ do_display = args.display
 os.system("mkdir -p %s" % args.save)
 
 #define dictionary describing ann
-params = {'size':int(args.hidden),'af':args.activation,'layers':int(args.layers),'init':args.init,'celltype':args.celltype} 
+params = {'size':int(args.hidden),'af':args.activation,'layers':int(args.layers),'init':args.init} 
 
 #define dictionary describing domain
-domain = {'name':args.domain,'difference_frames':False,'frameskip':int(args.frameskip),'history':1,'rgb':False,'incentive':'fitness'}
+domain = {'name':args.domain, 'incentive':'fitness'}
 
 #initialize domain
 evolution_domain.setup(domain,params)
 
-#fire up pygame for visualization
-import pygame
-from pygame.locals import *
-
 
 def find_fitness(agent):
-    if agent==None:
-        return 0
-    else :
-        return agent.fitness
+	''' Wrapper over fitness object over agent class
+
+	Args:
+		agent: the individual
+	Returns:
+		0 if random agent else the fitness
+	'''
+
+	if agent==None:
+        	return 0
+	else :
+        	return agent.fitness
 
 
 #Maze rendering call (visualize behavior of population)
@@ -87,6 +89,15 @@ def render_maze(pop):
 
 #takes population and gives out a child
 def get_child(population, mutation_mag, evals, greedy_select=5):
+	''' Select the parent, mutate the parent to make a child.
+	Agrs:
+		population: colletion of agent from which parent need to be sample
+		mutation_mag: mutation magnitude
+		evals: current generation number
+		greedy_select: degree of exploitation vs exploration
+	Returns: 
+		child: agent made after the mutation
+	'''
 	parents = random.sample(population, greedy_select)
 	parent = reduce(lambda x, y: x if x.fitness > y.fitness else y, parents)
 	child = parent.copy((evals, parent.identity[1]))
@@ -95,6 +106,11 @@ def get_child(population, mutation_mag, evals, greedy_select=5):
 
 #evaluation
 def evaluate(individual, test_opponents, **kwargs):
+	''' Individual plays against opponents
+	Args:
+		individual: individual whose evaluation needs to be done
+		test_opponents: opponents against which the individual plays
+	'''
 	r = 0
 	for against in test_opponents:
 		#this returns reward, terminal_state, broken, the_game
@@ -111,52 +127,48 @@ if (__name__ == '__main__'):
     #number of threads
     threads = 4  
 
-    #for testing pourpose. Here ice means we are re-evaluting.
-    #Re-evaluation of performance
-    #Re-evaluation of fitness
-   # ice_population_fitness = []
-
-    #performance check of population
+    #performance record of population
     performance = []
+    #performance record of elite agent
     performance_elite = []
 
-    #average population fitness check after every 100 evals
+    #average population fitness
     population_fitness = []
 
-    #average population fitness check after every 100 evals
+    #average elite fitness
     population_elite_fitness = []
     elite = [None]*10
 
-    #Aditya: This code is not relevent for us. 
-    #placeholders to hold champion
-    best_fit = -1e9
-    best_ind = None
-    best_beh = None
-
-    #highest ice_population_fitness
-    best_pop_fitness = -1
-    best_eval = 0
-
     #grab population size
     psize = int(args.pop_size)
+
+    # To take account of each family
     '''
     individual_hierarchy = {}
     for i in range(psize):
     	individual_hierarchy[i+1] = []
     '''
-    #number of trials
+
+    #number of trials in each tournament
     trials = 30
+
+    # flag: Do average fitness of agent in all generations
+    reset_score = False
 
     #cluster model
     cluster_model = KMeans(n_clusters=int(trials/6), n_jobs=-1)
 
     # Opponents for the tournament
     opponents = []
+    #performance record of all opponents
     perfo_allOppo = []
+    #average opponent fitness
     opponent_fitness = []
+    # number of random opponents in the team
     random_opponent = 10
     for _ in range(trials):
         opponents.append(None)
+    # all the oppoenets we have
     all_opponents = copy.deepcopy(opponents)
 
     #broken
@@ -167,7 +179,7 @@ if (__name__ == '__main__'):
 
         threads = []
         robot = evolution_domain.individual((1, k+1))
-        #individual_hierarchy[k+1].append(robot)
+        # individual_hierarchy[k+1].append(robot)
         #initialize random parameter vector
         robot.init_rand()
 
@@ -184,46 +196,52 @@ if (__name__ == '__main__'):
         #add to population
         population.append(robot)
 
+    # novelty vertors for all individuals
     X = [indv.get_novelty_vector() for indv in population]
     cluster_model.fit(X)
     
     print("population_fitness ", np.mean([x.fitness for x in population]))
+
+    # Selecting the elite agents from the population
     values = [[copy.deepcopy(ind), ind.fitness] for ind in population]
     values.sort(key = operator.itemgetter(1))
     for x in enumerate(values[-(1+len(elite)):-1]):
         elite[x[0]] =  x[1][0]
 
     print("population_elite_fitness ", np.mean([x.fitness for x in elite]))
-    #Dominance
+    
+    #Dominance: Which geneome is the most dominant in the population
     dominance = np.ones(psize)
 
     #solution flag
     solved = False
 
-    #broken
+    #broken flag
     broken = False
 
-    #we spent generations looking at the population
+    #number of generations
     evals = 0
 
+    # population play flag
     population_play = args.population_play
 
     #number of tournaments in each generation
     gen_length = int(args.gen_length)
-    #gen_length = psize
     #parse max evaluations
     max_gen = int(args.max_gen)
 
-    #tournament size
+    #degree of exploitation vs exploration
     greedy_kill = 5
     greedy_select = 5
+
     #parse mutation intensity parameter
     mutation_mag = float(args.mutation_mag)
 
+    #flags 
     update_eval = 0
     update_novelty = 0
 
-    
+    # Creating folder
     if args.save_reward:
         if args.population_play:
             if not os.path.exists('PopulationPlay/'+args.name):
@@ -237,14 +255,12 @@ if (__name__ == '__main__'):
 
         print('Evaluation no. ' ,evals)
 
-        trial_reward = 0
-
         broken = True
 
         evals += 1
         if evals % 2 == 0:
             gc.collect()
-
+        # number of tournament played
         tournament_played = 0
 
         #initialize empty population for childs
@@ -259,25 +275,25 @@ if (__name__ == '__main__'):
         		r, _ = future.result()
         		test.append(r/len(opponents))
                 
+        # To check everything is working fine
         performance.append(test)
         if test[-1]<-1:
             raise('check2')
 
+        # Evaluate elite performance against random agents
         test = []
         with concurrent.futures.ThreadPoolExecutor() as executor:
             for test_agent in elite:
                 future = executor.submit(evaluate, individual=test_agent, test_opponents=[None]*30, push_all=args.state_archive, test=True)
                 r, _ = future.result()
                 test.append(r/len(opponents))
-                
+
+        # To check everything is working fine                
         performance_elite.append(test)
         if test[-1]<-1:
             raise('check5')
-
-
         
         # Evaluate population performance against all_opponents, basicly this is the fitness in case of population_play.
-
         test = []
         if args.population_play and not args.fast:
         	with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -289,13 +305,14 @@ if (__name__ == '__main__'):
         		if test[-1]<-1:
         			raise('check3')            
 
-        #Get the average fitness of population
+        
         print (bcolors.WARNING)
 
         if args.population_play:
             print('opponent_fitness ', np.mean([find_fitness(x) for x in all_opponents]))
             opponent_fitness.append(np.mean([find_fitness(x) for x in all_opponents]))
 
+        #Get the average fitness of population
         print("population_fitness ", np.mean([x.fitness for x in population]))
         print("population_elite_fitness ", np.mean([x.fitness for x in elite]))
         print (bcolors.ENDC)
@@ -308,9 +325,11 @@ if (__name__ == '__main__'):
         print('Recalculating the fitness')
         print (bcolors.ENDC)
         for parent in population:
-            #parent.matchs_played = 0
-            #parent.net_reward = 0
-            #parent.fitness = 0
+            if reset_score:
+            		parent.matchs_played = 0
+            		parent.net_reward = 0
+            		parent.fitness = 0
+            	
             threads = []
             for against in all_opponents:
             	thread = threading.Thread(target=parent.map, args=(args.state_archive, against))
@@ -326,7 +345,6 @@ if (__name__ == '__main__'):
         print("re_population_fitness ", np.mean([x.fitness for x in population]))
         print("population_elite_fitness ", np.mean([x.fitness for x in elite]))
         print (bcolors.ENDC)
-        #ice_population_fitness.append(np.mean([x.fitness for x in population]))        
 
         
         #creation of new off springs, tournament selection and evalute in domain
@@ -362,7 +380,7 @@ if (__name__ == '__main__'):
         	to_kill.kill()
         	dominance[to_kill.identity[1]-1] -= 1
         	del to_kill
-
+        # Finding new elite agents
         values = [[copy.deepcopy(ind), ind.fitness] for ind in population]
         values.sort(key = operator.itemgetter(1))
         for x in enumerate(values[-(1+len(elite)):-1]):
@@ -373,9 +391,12 @@ if (__name__ == '__main__'):
             update_eval = evals
             update_novelty = evals
 
+            # Making clusters of the population
             X = [indv.get_novelty_vector() for indv in population]
             yhat = cluster_model.predict(X)
             pop_np = np.array(population)
+
+            # Add opponent to the opponents team
             for cluster in range(int(trials/6)):
             	pop_cluster = list(pop_np[np.where(yhat == cluster)])
             	print(len(pop_cluster))
@@ -384,7 +405,9 @@ if (__name__ == '__main__'):
             	else:
             		new_ops = random.sample(population, int(psize/25))
             	new_op = copy.deepcopy(reduce(lambda x, y: x if x.fitness > y.fitness else y, new_ops))
+            	# Replace opponent
             	opponents[int(np.random.rand()*(len(opponents)-random_opponent))] = new_op
+            	# Add opponent
             	all_opponents.append(new_op)
             del pop_np
             '''
@@ -400,7 +423,7 @@ if (__name__ == '__main__'):
             X = [indv.get_novelty_vector() for indv in population]
             cluster_model.fit(X)
 
-
+        # Geometric decrease for mutation magnitude and increase of numbers of trails
         if (evals-update_eval)%20==0:
             update_eval = evals
             #trials = trials*2 # exponential trials are currently not for population play
@@ -412,6 +435,7 @@ if (__name__ == '__main__'):
             for _ in range(trials - len(all_opponents)):
             	all_opponents.append(None)
 				
+		# Save the data
         if args.population_play:
             file = open('PopulationPlay/'+args.name+'/dominance.txt','a') 
             #dbfile = open('PopulationPlay/'+args.name+'/elite_agent', 'ab') 
