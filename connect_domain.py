@@ -34,6 +34,7 @@ max_episode_length = 600
 #global archive to keep track of states sampled from environment
 state_archive = collections.deque([], 200)
 
+# setup the environment
 def set_maze(config):
     global env
     env = pyspiel.load_game("connect_four")
@@ -188,10 +189,8 @@ class netmodel(torch.nn.Module):
         return count
 
 
-#genome class that can be mutated, selected, evaluated in domain
-#substrate for evolution
 class individual:
-    env = None  #perhaps turn this into an env_generator? or pass into constructor? for parallelization..
+    env = None  
     model_generator = None
     global_model = None
     rollout = None
@@ -205,45 +204,38 @@ class individual:
         self.alive = True
         self.dead_weight = False
         self.parent= None
-        self.percolate = False
         self.selected = 0
         self.matchs_played = 0
         self.net_reward = 0
         self.identity = identity
         self.states = collections.deque([], 100)
 
-        if self.percolate:
-            self.__class__.instances.append(weakref.proxy(self))
 
-    def copy(self, identity, percolate=False): 
+    def copy(self, identity): 
+        ''' Make a copy of itself
+        Args:
+            identity: identity of the new individual
+        Returns:
+            new_ind: new individual
+        '''
         new_ind = individual(identity)
         new_ind.genome = self.genome.copy()
         new_ind.states = self.states
+        new_ind.parent = self
 
-        if self.percolate:
-            new_ind.parent = self
-
-        #update live descendant count
-        if self.percolate:
-            self.live_descendants += 1
-            if hasattr(self,'parent'):
-                p_pointer = self.parent
-            else:
-                p_pointer = None
-                self.parent = None
-            while p_pointer != None:
-                p_pointer.live_descendants += 1 
-                p_pointer = p_pointer.parent
-        
         return new_ind
 
     def kill(self):
+        '''Individual kill itself
+        '''
         self.alive=False
         if self.live_descendants <= 0:
                 self.dead_weight=True
         self.remove_live_descendant()
 
     def remove_live_descendant(self):
+        '''Change live decendants
+        '''
         p_pointer = self.parent
         while p_pointer != None:
             p_pointer.live_descendants -= 1
@@ -253,6 +245,10 @@ class individual:
             p_pointer = p_pointer.parent
 
     def mutate(self, mutation='regular', **kwargs):
+        '''Mutate the parent with the respective mutation kind.
+        Args:
+            mutation: kind of mutation('regular' or 'SM-G-SUM' or 'SM-G-SO' or 'SM-R')
+        '''
 
         #plain mutation is normal ES-style mutation
         if mutation=='regular':
@@ -277,8 +273,9 @@ class individual:
         else:
             assert False
 
-    #randomly initialize genome using underlying ANN's random init
     def init_rand(self):
+        '''Initialize the individual with a random genome using underlying ANN's random init.
+        '''
         global controller_settings
         model = individual.model_generator
         env = individual.env
@@ -287,10 +284,12 @@ class individual:
         newmodel = model(len(state.observation_tensor()), len(state.legal_actions()), controller_settings)
         self.genome = newmodel.extract_parameters()
 
-    def render(self, screen):
-        pass
 
     def get_novelty_vector(self):
+        '''Make novelty vector from the agent's actions correposding the archived states.
+        Returns:
+            novelty_vertor: list of actions
+        '''
         global_model_agent = copy.deepcopy(individual.global_model)
         global_model_agent.inject_parameters(self.genome)
 
@@ -309,10 +308,22 @@ class individual:
 
     #evaluate genome in environment with a roll-out
     def map(self, push_all=True, against = None, test = False, print_game=False):
+        '''Evaluate the individual against the opponents.
+        Args:
+            push_all: flag for adding states in state_archive.
+            against: the opponent; if None then the random agent
+            test: floag for updating statistics 
+            print_game: flag for printing the game
+        Returns:
+            reward: reward obtained for the match
+            terminal_state: the final state of the board
+            broken: flag for incomplete matches
+            the_game: all the state records for the match  
+        '''
         global state_archive
         global_model_agent = copy.deepcopy(individual.global_model)
         global_model_agent.inject_parameters(self.genome)
-        reward, state_buffer, terminal_state, broken, the_game = individual.rollout({}, global_model_agent, individual.env, against, self.states, print_game)
+        reward, state_buffer, terminal_state, broken, the_game = individual.rollout(global_model_agent, individual.env, against, self.states, print_game)
 
         if test:
             return reward, terminal_state, broken, the_game
@@ -340,9 +351,6 @@ class individual:
 
         return reward, terminal_state, broken
 
-    def prepare(self):
-        pass
-
     #does individual solve the task?
     def solution(self):
         return self.solved
@@ -366,7 +374,25 @@ class individual:
         print (model.extract_parameters().shape )
 
 #Method to conduct maze rollout
-def do_rollout(args, model, env, against, state_buffer=None, print_game=False, render=False, screen=None):
+def do_rollout(model, env, against, state_buffer=None, print_game=False, render=False):
+    '''The rollout
+    Args:
+        model: the neural network model of the player
+        env: two player board game environment
+        against: the opponent against which player will play
+        state_buffer: this will be used to maintain state_archive
+        print_game: flag for printing the match
+        render: flag for rendring the game such that user can see the live match
+    Returns:
+        this_model_return: the reward obtained by player
+        state_buffer: updated state_buffer
+        state: terminal state of the game
+        broken: flag for incomplete game
+        the_game: the record for all the states in the match
+    '''
+
+
+
     if state_buffer==None:
         state_buffer = collections.deque([], 400)
 
