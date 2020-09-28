@@ -21,7 +21,7 @@ import uuid
 import pyspiel
 import re
 
-do_cuda = True 
+do_cuda = False 
 if not do_cuda:
     torch.backends.cudnn.enabled = False
 
@@ -43,7 +43,6 @@ class netmodel(torch.nn.Module):
     def __init__(self, num_inputs, action_space, settings={}, in_channels=3, num_features=4):
         super(netmodel, self).__init__()
 
-        #should hidden units have biases?
         num_outputs = action_space
 
         self.softmax = nn.Softmax(dim=1)
@@ -78,6 +77,7 @@ class netmodel(torch.nn.Module):
             nn.Linear(num_outputs * 2, num_outputs),
 
         )
+
 
     def forward(self, inputs, mask, intermediate=None, debug=False):
         #output layer
@@ -166,44 +166,39 @@ class individual:
         self.alive = True
         self.dead_weight = False
         self.parent= None
-        self.percolate = False
         self.selected = 0
         self.matchs_played = 0
         self.net_reward = 0
         self.identity = identity
 
-        if self.percolate:
-            self.__class__.instances.append(weakref.proxy(self))
+        
 
     def copy(self, identity, percolate=False): 
+        ''' Make a copy of itself
+        Args:
+            identity: identity of the new individual
+        Returns:
+            new_ind: new individual
+        '''
         new_ind = individual(identity)
         new_ind.genome = self.genome.copy()
         new_ind.states = self.states
+        new_ind.parent = self
 
-        if self.percolate:
-            new_ind.parent = self
-
-        #update live descendant count
-        if self.percolate:
-            self.live_descendants += 1
-            if hasattr(self,'parent'):
-                p_pointer = self.parent
-            else:
-                p_pointer = None
-                self.parent = None
-            while p_pointer != None:
-                p_pointer.live_descendants += 1 
-                p_pointer = p_pointer.parent
         
         return new_ind
 
     def kill(self):
+        '''Individual kill itself
+        '''
         self.alive=False
         if self.live_descendants <= 0:
                 self.dead_weight=True
         self.remove_live_descendant()
 
     def remove_live_descendant(self):
+        '''Change live decendants
+        '''
         p_pointer = self.parent
         while p_pointer != None:
             p_pointer.live_descendants -= 1
@@ -213,7 +208,10 @@ class individual:
             p_pointer = p_pointer.parent
 
     def mutate(self, mutation='regular', **kwargs):
-
+        '''Mutate the parent with the respective mutation kind.
+        Args:
+            mutation: kind of mutation('regular' or 'SM-G-SUM' or 'SM-G-SO' or 'SM-R')
+        '''
         #plain mutation is normal ES-style mutation
         if mutation=='regular':
             self.genome = mutate_plain(self.genome, states=self.states,**kwargs)
@@ -239,6 +237,8 @@ class individual:
 
     #randomly initialize genome using underlying ANN's random init
     def init_rand(self):
+        '''Initialize the individual with a random genome using underlying ANN's random init.
+        '''
         global controller_settings
         model = individual.model_generator
         env = individual.env
@@ -247,11 +247,42 @@ class individual:
         newmodel = model(len(state.observation_tensor()), len(state.legal_actions()), controller_settings)
         self.genome = newmodel.extract_parameters()
 
-    def render(self, screen):
-        pass
+    def get_novelty_vector(self):
+        '''Make novelty vector from the agent's actions correposding the archived states.
+        Returns:
+            novelty_vertor: list of actions
+        '''
+        global_model_agent = copy.deepcopy(individual.global_model)
+        global_model_agent.inject_parameters(self.genome)
+
+        sz = min(100, len(state_archive))
+        #np_obs = random.sample(state_archive, sz)
+        np_obs = state_archive
+        verification_states = Variable(
+            torch.from_numpy(np.array([i[0] for i in np_obs])), requires_grad=False)
+        verification_mask = Variable(
+            torch.from_numpy(np.array([i[1] for i in np_obs])), requires_grad=False)
+
+        output = global_model_agent(verification_states, verification_mask.squeeze(1))
+        novelty_vector = output.data.numpy()
+        novelty_vector = [np.argmax(out) for out in novelty_vector]
+        return novelty_vector
+
 
     #evaluate genome in environment with a roll-out
     def map(self, push_all=True, trace=False, against = None, test = False):
+        '''Evaluate the individual against the opponents.
+        Args:
+            push_all: flag for adding states in state_archive.
+            against: the opponent; if None then the random agent
+            test: floag for updating statistics 
+            print_game: flag for printing the game
+        Returns:
+            reward: reward obtained for the match
+            terminal_state: the final state of the board
+            broken: flag for incomplete matches
+            the_game: all the state records for the match  
+        '''
         global state_archive
         individual.global_model.inject_parameters(self.genome)
         reward, state_buffer, terminal_state, broken = individual.rollout({}, individual.global_model, individual.env, against)
@@ -264,7 +295,6 @@ class individual:
             state_archive = state_buffer
             self.states = state_buffer
         else:
-            print("not using all states")
             state_archive.appendleft(random.choice(state_buffer))
             self.states = None
 
@@ -304,9 +334,23 @@ class individual:
         print (self.genome.shape)
         print (model.extract_parameters().shape )
 
-#Method to conduct maze rollout
 @staticmethod
 def do_rollout(args, model, env, against, render=False, screen=None, trace=False):
+    '''The board game rollout
+    Args:
+        model: the neural network model of the player
+        env: two player board game environment
+        against: the opponent against which player will play
+        state_buffer: this will be used to maintain state_archive
+        print_game: flag for printing the match
+        render: flag for rendring the game such that user can see the live match
+    Returns:
+        this_model_return: the reward obtained by player
+        state_buffer: updated state_buffer
+        state: terminal state of the game
+        broken: flag for incomplete game
+        the_game: the record for all the states in the match
+    '''
     state_buffer = collections.deque([], 400)
 
     transform = transforms.Compose([transforms.ToTensor()])

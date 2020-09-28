@@ -46,7 +46,6 @@ class netmodel(torch.nn.Module):
     def __init__(self, num_inputs, action_space,settings={}):
         super(netmodel, self).__init__()
 
-        #should hidden units have biases?
         _b = True
 
         _init = 'xavier'
@@ -373,9 +372,8 @@ class individual:
         print (self.genome.shape)
         print (model.extract_parameters().shape )
 
-#Method to conduct maze rollout
 def do_rollout(model, env, against, state_buffer=None, print_game=False, render=False):
-    '''The rollout
+    '''The board game rollout
     Args:
         model: the neural network model of the player
         env: two player board game environment
