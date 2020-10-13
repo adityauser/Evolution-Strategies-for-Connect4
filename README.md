@@ -17,5 +17,11 @@ To find about all the arguments use: <br>
 - Resolve bug in CNN code.
 - Add some descriptive figures.
 
-This code is based on Uber-AI safemutation work. You can find the original code [here](https://github.com/uber-research/safemutations).
+I have also written a blog, which explains what we have done in this project. [Here](https://adityauser.github.io/blog/2020/09/05/PlayingBoardGames.html) is the link to the blog. You are welcome to create issues for your queries regarding the project. <br>
+
+This code is based on Uber-AI safemutation work. You can find the original code [here](https://github.com/uber-research/safemutations). <br>
+
+The second part of my internship was on **Evolution Strategies for Multi-Armed Bandit problem**. Please do checkout [Evolution Strategies for Multi-Armed Bandit problem](https://github.com/adityauser/Evolution-Strategies-RL/tree/master/Multi-Armed%20Bandit).
+
+
 
